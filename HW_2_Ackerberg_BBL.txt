@@ -1,0 +1,424 @@
+Empirical IO Homework
+Dynamic Entry/Exit game
+Suppose that in each time period, a set of firms producing homogeneous products play a simultaneous
+move Nash quantity-setting game. The market-level inverse demand curve in market in time t is given by
+pt = 10 − Qt + xt
+where Qt is the total quantity produced by all the firms, and xt is a demand shifter. Assume that all firms
+have 1) a marginal cost of 0, and 2) a fixed cost of operation of 5 per-period.
+
+1) Given these cost and demand primitives, derive a equation expressing the Nash-equilibrium single
+period profits per firm, as depending on the total number of firms Nt and the demand shifter xt . In other
+words, derive the formula for π(Nt , xt ). This formula will be useful for the computations later.
+
+Next, consider the dynamic entry and exit process. First, assume that the demand shifter xt takes on
+3 possible values {−5, 0, 5}, and that this evolves over time according to the following first order Markov
+transition matrix (e.g. given xt = 5, the probability that xt+1 = −5 is 0.2):
+
+xt
+
+-5
+0
+5
+
+-5
+0.6
+0.2
+0.2
+
+xt+1
+0
+0.2
+0.6
+0.2
+
+5
+0.2
+0.2
+0.6
+
+For the exit process, assume that in each period, each active firm gets a stochastic sell oﬀ value:
+µit ∼ N (µ, σ 2µ )
+This value µit is assumed to be private information for the firm, and it is assumed to be i.i.d. across firms
+and time. If a firm decides to exit at period t, it receives current payoﬀ of just µit (note that this is slightly
+diﬀerent than the model in class) and is then out of the market forever. This implies that the value function
+for an active firm is
+©
+£
+¤ª
+µit , π(Nt , xt ) + 0.9E V (Nt+1 , xt+1 , µit+1 )|Nt , xt , dit = 1
+V (Nt , xt , µit ) = max
+dit ∈{0,1}
+
+where dit = 0 if the firm exits and dit = 1 if the firm remains in the market.
+
+For the entry process, assume that in each period, there is one "potential entrant" into the market. This
+potential entrant is endowed with a stochastic entry cost:
+γ it ∼ N (γ, σ 2γ )
+that they must pay to enter the market (γ it is also private information to the entrant and assumed iid across
+time). If the firm decides to enter at t, their single period payoﬀs at t are −γ it - i.e. they only begin to
+produce and make profits in the next period. If the firm decides not to enter at t, they disappear from the
+market forever. This implies that the value function for a potential entrant is:
+©
+£
+¤ª
+V E (Nt , xt , γ it ) = max 0, −γ it + 0.9E V (Nt+1 , xt+1 , γ it+1 )|Nt , xt , eit = 1
+eit ∈{0,1}
+
+where eit = 1 if the firm enters and eit = 0 if the firm does not enter the market.
+
+1
+
+We will focus attention on symmetric Markov-Perfect Nash Equilibria of this game that take the following
+"cutoﬀ" form:
+½
+0
+if µit > µ(Nt , xt )
+For an incumbent Firm:
+dit =
+1
+if µit ≤ µ(Nt , xt )
+½
+0
+if γ it > γ(Nt , xt )
+For a potential entrant:
+eit =
+1
+if γ it ≤ γ(Nt , xt )
+
+2) Why does a cutoﬀ equilbrium make intuitive sense in this setup?
+
+Assume that the maximum number of firms in the market is 5 (i.e. when Nt = 5, assume that the
+entry cost γ it is ∞ with probability 1.) This means that there are 18 possible values of the state i.e.
+Nt ∈ {0, 1, 2, ...5}, xt ∈ {−5, 0, 5}. Therefore, equilibrium can be summarized by 36 cutoﬀ numbers,
+µ(Nt , xt ) at each of the 18 possible states, and γ(Nt , xt ) at each of the 18 possible states. Actually, note
+that only 30 of these numbers are relevant, since in states where Nt = 0 there are no incumbents (so µ(0, xt )
+is irrelevant), and in states where Nt = 5 there can be no entry, (so γ(5, xt ) is irrelevant).
+Also note that the 2 value functions can be alternatively written as:
+⎧
+⎨
+X XZ
+µit , π(Nt , xt ) + 0.9
+V (Nt+1 , xt+1 , µit+1 )p(dµit+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xit , dit = 1)
+V (Nt , xt , µit ) = max
+dit ∈{0,1} ⎩
+x
+Nt+1
+
+t+1
+
+⎧
+⎫
+⎨
+⎬
+X XZ
+V E (Nt , xt , γ it ) = max
+0, −γ it + 0.9
+V (Nt+1 , xt+1 , µit+1 )p(dµit+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , eit = 1)
+⎭
+eit ∈{0,1} ⎩
+x
+Nt+1
+
+t+1
+
+Then, defining
+
+V (Nt , xt ) =
+
+Z
+
+V (Nt , xt , µit )p(dµit )
+
+we can write the value functions as:
+⎧
+⎫
+⎨
+⎬
+X X
+V (Nt , xt , µit ) = max
+µit , π(Nt , xt ) + 0.9
+V (Nt+1 , xt+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , dit = 1)
+⎭
+dit ∈{0,1} ⎩
+x
+Nt+1
+
+t+1
+
+⎧
+⎫
+⎨
+⎬
+X X
+0, −γ it + 0.9
+V (Nt+1 , xt+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , eit = 1)
+V E (Nt , xt , γ it ) = max
+⎭
+eit ∈{0,1} ⎩
+x
+Nt+1
+
+t+1
+
+Note that V (Nt , xt ) is not defined when Nt = 0 (this follows because V (Nt , xt , µit ) is not defined at Nt = 0,
+i.e. there is no value function for an incument at Nt = 0 because there is no incumbent with Nt = 0). .
+
+3) Describe (at an intuitive level) what V (Nt , xt ) measures.
+specific value functions of Rust (1987)?
+
+How does this relate to the alternative
+
+4) Assume that the parameters of the model take the values: γ = 5, σ2γ = 5, µ = 5, and σ 2µ = 5. Use the
+following iterative process to solve for the equilibrium (lets assume at the moment that it is unique). Note
+that this process is related to, but slightly diﬀerent than the procedure I outlined in class:
+
+2
+
+1. Guess µ(Nt , xt ), γ(Nt , xt ), and V (Nt , xt ) (note: this is just 3 vectors of 15 numbers, since µ(Nt , xt )
+and V (Nt , xt ) are not defined when Nt = 0, and γ(Nt , xt ) is not defined when Nt = 5 )
+2. Using µ(Nt , xt ) and γ(Nt , xt ), compute the transition matrices Pr(Nt+1 |Nt , xt , dit = 1) and Pr(Nt+1 |Nt , xt , eit =
+1). There should be six of these matrices (for dit = 1, there should be 1 for each of the 3 xt ’s, and for
+eit = 1 there should be one for each of the 3 xt ’s ) Why are the two matrices diﬀerent (for a given xt )?
+3. Compute
+Ψ1 (Nt , xt ) = 0.9
+
+X X
+
+Nt+1 xt+1
+
+Ψ2 (Nt , xt ) = 0.9
+
+X X
+
+Nt+1 xt+1
+
+V (Nt+1 , xt+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , dit = 1)
+V (Nt+1 , xt+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , eit = 1)
+
+4. Solve for "new" optimal cutoﬀs at each state using:
+µ0 (Nt , xt ) = π(Nt , xt ) + Ψ1 (Nt , xt )
+γ 0 (Nt , xt ) = Ψ2 (Nt , xt )
+Why do these equations tell us the new optimal cutoﬀs (given the computed values of Pr(Nt+1 |Nt , xt , dit =
+1) and Pr(Nt+1 |Nt , xt , eit = 1))?
+0
+
+5. Solve for "new" V (Nt , xt ) at each state using:
+Z
+0
+V (Nt , xt ) =
+V (Nt , xt , µit )p(dµit )
+⎧
+⎫
+Z
+⎨
+⎬
+X X
+µit , π(Nt , xt ) + .9
+=
+max
+V (Nt+1 , xt+1 ) Pr(xt+1 |xt ) Pr(Nt+1 |Nt , xt , dit =1) p(dµit )
+⎭
+dit ∈{0,1} ⎩
+Nt+1 xt+1
+Z
+=
+max {µit , π(Nt , xt ) + Ψ1 (Nt , xt )} p(dµit )
+dit ∈{0,1}
+⎡
+⎛
+⎞⎤
+∙
+¸
+1 (Nt ,xt )−µ
+φ( π(Nt ,xt )+Ψ
+)
+π(Nt , xt ) + Ψ1 (Nt , xt ) − µ ⎣
+σµ
+⎠⎦
+=
+1 − Φ(
+) µ + σµ ∗ ⎝
+1 (Nt ,xt )−µ
+σµ
+1 − Φ( π(Nt ,xt )+Ψ
+)
+σµ
++Φ(
+
+π(Nt , xt ) + Ψ1 (Nt , xt ) − µ
+) [π(Nt , xt ) + Ψ1 (Nt , xt )]
+σµ
+
+where φ and Φ are the standard normal pdf and cdf. Where is the last equality coming from?
+0
+
+6. With the new µ0 (Nt , xt ), γ 0 (Nt , xt ), and V (Nt , xt ), go back to step 1.
+7. Iterate procedure until convergence.
+
+5) Try resolving for the equilibrium (question 4) starting with 5 diﬀerent guesses of the initial values of
+µ(Nt , xt ), γ(Nt , xt ), and V (Nt , xt ). Do you find any evidence of multiple equilibria?
+
+6) At the equilibrium (or one of the equilibria - if there are multiple equilibria, you can pick whichever
+one you like), tell me the values µ(3, 0), γ(3, 0), V (3, 0), and V (3, 0, −2).
+
+7) Consider a market starting out with 0 firms and xt = 0. Simulate this structure of this market 10000
+periods into the future. You can do this using only the equilibrium µ(Nt , xt ) and γ(Nt , xt ) functions you
+3
+
+have computed (along with Pr(xt+1 |xt )) . Note that you will need to take draws from the µit and γ it
+distributions to do this. What is the average number of firms in the market across these 10000 periods?
+
+8) Suppose the government decided to implement a 5 unit entry tax. What happens to the average
+number of firms in equilibrium? (note: you will need to resolve for a new equilibrium to do this). Can you
+answer this question if there are multiple equilibria? Why or why not?
+
+9) Using the simulated data from Question 7), use a BBL-like estimator to estimate γ, σ 2γ , µ, and σ 2µ . In
+other words assume you know everything about the model (demand, fixed and marginal costs, discount factor,
+p(xt+1 |xt ) distribution) except for these 4 parameters, and estimate them. More specifically, estimation
+should proceed as follows:
+b t , xt ) and eb(Nt , xt ), directly from the data.
+A) Estimate the reduced form expected policy functions, d(N
+At each state, these policy functions tell us, respectively, 1) the probability that any specific incumbent
+stays in the market, and 2) the probability that the potential entrant enters. You can estimate these with
+b t , xt ) is the proportion of all incumbents in the data at state (Nt , xt ) who
+a frequency simulator, e.g. d(N
+decided to stay in the market, eb(Nt , xt ) is the proportion of times in the data where at state (Nt , xt ), the
+b t , xt ) when Nt = 0, nor do you need
+entrant decided to enter. Note that you do not need to estimate d(N
+b
+to estimate eb(Nt , xt ) when Nt = 5 (if you want, you can just set d(0, xt ) = eb(5, xt ) = 0). If there are other
+b t , xt ) and eb(Nt , xt ) from a nearby
+states (Nt , xt ) that are never reached in the dataset, use the values of d(N
+b t , xt ) and eb(Nt , xt ) using a probit
+state that was observed in the data. Alternatively, you can estimate d(N
+or logit model with a high order polynomial in Nt and xt .
+
+b t , xt ), eb(Nt , xt ),
+B) Guess the parameters γ, σ2γ , µ, and σ 2µ . At each possible value of the state, use d(N
+π(Nt , xt ) and Pr(xt+1 |xt ) to "forward" simulate the PDV of one of the incumbents (call this firm "Firm 1")
+conditional on that firm deciding not to exit in the initial period (clearly, you can’t do this at states where
+Nt = 0). This involves simulating 1) decisions of potential entrants in the current period and the future,
+2) decisions of firms other than Firm 1 in the current period and the future, and 3) decisions of Firm 1 in
+the future (since we are already conditioning on Firm 1 not exiting in the current period, we don’t need
+to simulate Firm 1’s current decision). To simulate all these decisions, you will need to take draws of µit
+and γ it (these draws will obviously depend on the parameters. Create them by taking draws from
+N (0, 1)’s, multiplying by σ µ (or σ γ ) and adding µ (or γ). Importantly (and like we did in the
+BLP problem set), hold the underlying N (0, 1) draws constant as the parameters change (also
+hold the draws on the xt process the same across simulations). Given such draws, an incumbent stays in
+the market if
+µ
+¶
+µit − µ
+b t , xt )
+Φ
+≤ d(N
+σµ
+and an entrant enters if
+
+Φ
+
+µ
+
+γ it − γ
+σγ
+
+¶
+
+≤ eb(Nt , xt )
+
+b t , xt ) = 0.25, then firms
+Note that these equations are implied by the cutoﬀ equilibrium, because if, e.g. d(N
+with µit ’s in the lower quartile of the distribution must be the ones that are staying in the market. Simulate
+forward in time until either Firm 1 exits the market (or until t gets very large, e.g. 100) and add up Firm
+1’s total discounted profits. Note that if Firm 1 eventually exits, you will need to add her simulated µit in
+that period (appropriately discounted) into total profits to compute the simulated total stream of profits.
+C) Do the above forward simulation process 50 times for one of the incuments in each of the 15 states
+(i.e. all the states except those with Nt = 0), and average across these 50 runs to get an expectation of this
+PDV. Call these values Λ(Nt , xt | γ, σ 2γ , µ, σ 2µ ).
+4
+
+D) Note that according to the model, a firm will stay in the market if
+µit < Λ(Nt , xt |γ, σ 2γ , µ, σ 2µ )
+which, given the distribution of µit , should happen with probability
+Ã
+!
+Λ(Nt , xt |γ, σ 2γ , µ, σ 2µ ) − µ
+2
+2
+Pr(incumbent "stays in" at Nt , xt |γ, σ γ , µ, σ µ ) = Φ
+σµ
+Therefore, if the simulations of Λ(Nt , xt | γ, σ 2γ , µ, σ 2µ ) were done at the true parameters γ, σ 2γ , µ, σ 2µ , one
+would expect
+Ã
+!
+Λ(Nt , xt |γ, σ 2γ , µ, σ 2µ ) − µ
+b t , xt )
+Φ
+at every Nt , xt
+(1)
+≈ d(N
+σµ
+E) Do a similar forward simulation process to compute the expected PDV of future profits for a potential
+entrant in each of the 15 states (ignore states where Nt = 5). More specifically, what you want to simulate
+here is the expected PDV of a potential entrant entering, net of the entry cost γ it (by "net of the entry cost
+γ it " I mean that you should not add the −γ it for the entering period into the total PDV). Denote these
+simulated values for each of the 15 states by ΛE (Nt , xt | γ, σ 2γ , µ, σ 2µ ). Similar to Step 4), according to the
+model, a potential entrant will enter if
+ΛE (Nt , xt |γ, σ 2γ , µ, σ 2µ ) > γ it
+which, given the distribution of γ it , should happen with probability
+Ã
+!
+ΛE (Nt , xt |γ, σ 2γ , µ, σ 2µ ) − γ
+2
+2
+Pr(entrant enters at Nt , xt |γ, σ γ , µ, σ µ ) = Φ
+σγ
+Therefore, if the simulations of ΛE (Nt , xt | γ, σ 2γ , µ, σ 2µ ) were done at the true parameters γ, σ 2γ , µ, σ 2µ , one
+would expect
+Ã
+!
+ΛE (Nt , xt |γ, σ 2γ , µ, σ 2µ ) − γ
+Φ
+≈ eb(Nt , xt )
+at every Nt , xt
+(2)
+σγ
+F) Given that equations (1) and (2) should hold at the true parameters, we will base estimation on them.
+More specifically, you should use a search procedure to find the γ, σ2γ , µ, and σ2µ that minimizes the following
+minimum distance criterion:
+!2
+Ã Ã
+!
+5 X
+X
+Λ(Nt , xt |γ, σ 2γ , µ, σ 2µ ) − µ
+b t , xt )
+min
+Φ
+− d(N
+σµ
+Nt =1 xt
+!2
+Ã Ã
+!
+4 X
+X
+ΛE (Nt , xt |γ, σ 2γ , µ, σ 2µ ) − γ
++
+Φ
+− eb(Nt , xt )
+σγ
+x
+Nt =0
+
+t
+
+10) You do not need to compute standard errors for your estimate (note that you wouldn’t be able to use
+standard minimum distance variance formulas, since those do not take into account the estimation error in
+b t , xt )
+Λ(Nt , xt |γ, σ 2γ , µ, σ 2µ ) and ΛE (Nt , xt |γ, σ 2γ , µ, σ 2µ ) (due to the fact that these quantities depend on d(N
+and eb(Nt , xt )). Does your estimation procedure do a good job of estimating the true parameters?
+
+5
+
+

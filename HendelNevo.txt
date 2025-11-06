@@ -1,359 +1,0 @@
-ECON 600: Industrial Organization
-Charles Hodgson
-
-Dynamic Demand: Storable Goods
-
-Dynamic Demand
-
-I So far, you've studied:
-I Static models of demand (e.g. BLP).
-I Single agent Dynamic Decision Problems (e.g. Rust)
-
-I Today we'll start putting these together.
-I Demand estimation when consumers are forward looking.
-
-Dynamic Demand 1: Durable Goods
-I When are dynamics important in consumer demand?
-I Two canonical cases:
-1. Durable goods.
-
-I E.g. market for cars.
-I Value of buying a car is the PDV of expected future utility
-ows.
-
-uijt = E
-
-"∞
-X
-t=0
-
-#
-t
-
-β vij(t) + pj(t−1)t − pj(t) − τ (j(t) 6= j(t − 1))
-
-I Where j(t) is the model held at date t . τ is the transaction
-cost of upgrading.
-
-I Expectation is over future sales and purchases.
-I Value of buying model j now depends on future option value of
-selling it.
-
-Dynamic Demand 1: Durable Goods
-
-uijt = E
-
-"∞
-X
-t=0
-
-#
-t
-
-β vij(t) + pj(t−1)t − pj(t) − τ (j(t) 6= j(t − 1))
-
-I so why can't we just run BLP and let uijt be a reduced form
-of future utility ows?
-
-I We can (this is one way to think about what BLP is doing).
-I But we can't then think about counterfactual policies that
-change dynamic incentives.
-
-I e.g. a scrappage scheme for old cars (cash for clunkers).
-I Changes τ for old cars.
-I Need to solve dynamic model to work out how this changes
-uijt .
-
-Dynamic Demand 2: Storable Goods
-I When are dynamics important in consumer demand?
-I Two canonical cases:
-1. Durable goods.
-2. Storable goods.
-
-I What if I can buy now and consume later?
-I i.e. consumers can hold
-eat the ow utility.
-
-inventories
-
-of products and wait to
-
-I If prices vary over time...
-I Or consumer believe prices vary over time...
-I Dynamic incentive to wait until products are on sale and then
-stock up.
-
-Dynamic Demand 2: Storable Goods
-I E.g. price of 2 liter coke from Hendel and Nevo (2011)
-
-Dynamic Demand 2: Storable Goods
-
-I E.g. price of 2 liter coke from Hendel and Nevo (2011)
-
-Dynamic Demand 2: Storable Goods
-I Why is this a problem from static demand estimation?
-I When supermarket cuts the price of laundry detergent for a
-week there is a huge increase in sales.
-
-I This leads us to conclude that consumers are extremely elastic
-to price.
-
-I But when price is cut permanently, there is little impact on
-sales!
-
-I Standard demand estimation pools all this price variation.
-I Overestimate price elasticity if lots of price variation comes
-from sales and products are storable.
-
-Hendel and Nevo (2006)
-
-I Model of dynamic demand for laundry detergent.
-I Purchase - storage - consumption.
-I How do demand estimates that account for inventories dier
-from static demand estimates?
-
-I Household scanner data from 9 supermarkets in Chicago.
-
-Hendel and Nevo (2006)
-
-Hendel and Nevo (2006)
-
-Hendel and Nevo (2006)
-
-Hendel and Nevo (2006): Model
-I Product characteristics:
-I For each brand (j ), size (x ) and week (t ):
-1. Price pjxt
-2. Quantity qjxt
-3. Promotions ajxt (dummies for feature and display)
-
-I Consumer of type h has utility u(cht + νht ; θh ).
-P
-I Current consumption is cht = j cjht . Not brand specic!
-I i.i.d shock to marginal value of consumption νht .
-I Observed Action: dhjxt = 1 is a purchase of brand j size x at
-date t by household h.
-
-Hendel and Nevo (2006): Model
-I Consumer's problem:
-I State variable st = {pt , at , it }.
-I pt and at vectors with entry for each product.
-I it is the consumer's current inventory or stock of detergent.
-
-I Policy functions c(st ) and djx (st ).
-
-Hendel and Nevo (2006): Model
-I Key assumptions on state variables:
-I it+1 = tt + xt − ct .
-I jxt iid type 1 extreme value. vt distributed iid log normal.
-I pjxt and ajxt follow exogenous rst order Markov process!
-I Price endogeneity?
-I ξhjx are xed eects.
-I Assumption of no time varying unobservable component.
-
-I Still hard to explain why a 1st order Markov process is
-reasonable...
-
-I Maybe it is a good representation of consumers' beliefs?
-
-Hendel and Nevo (2006): Likelihood
-I For each consumer, we observe a sequence of price and
-promotion variables (pt , at ), and the purchase decisions dt .
-I We do not observe inventories it or consumption choices ct .
-I it is an unobserved, serially correlated state variable!
-I Evolution of it is a function of optimal consumption choices
-ct (st ) (unobserved) and purchases dt (st ) observed.
-I Assumption A: 1st order Markov in observed and unobserved
-state.
-
-I Likelihood conditional on the initial inventory:
-
-I This is why we can't use CCP methods for estimation here.
-
-Hendel and Nevo (2006): Likelihood
-
-I Model denes optimal policy functions c(st ) and dt (st ).
-I Suppose we can solve the model.
-I Optimal policy functions give us F (it+1 |it , dt ).
-I But model does not dene F (i1 )
-I Initial conditions problem!
-
-Hendel and Nevo (2006): Likelihood
-
-I Hendel and Nevo's solution:
-I For each candidate parameter vector, θ, solve the model.
-I Set i0 = 0. Simulate optimal choices for the rst T0 periods
-(using actual prices).
-
-I Use distribution of simulated iT0 as F (i1 ).
-I Estimate the model on data from (T0 + 1) → T
-
-I Assumption: by period T0 we have reached stationary
-distribution.
-
-Hendel and Nevo (2006): Model Specication
-I So we can write down a likelihood if we can solve the model
-for c(st ) and dt (st ).
-I Back to the model...
-V (st ) = Et ,vt max {u(ct , vt , θ) − C (it+1 ; θ) + m(dt ; θ) + E [V (st+1 )|st , dt , ct ]}
-ct dt
-
-I u(c, v ; θ) = γ ln(ct + vt )
-2
-I C (it+1 ; θ) = δ1 it+1 + δ2 it+
-1
-P
-I m(dt ; θ) = j,x djxt (αpjxt + ξjx + βajxt + jxt )
-
-I In principle, can guess θ and use value function iteration to
-solve for optimal policy functions c(s) and d(s).
-I Problem: large state space.
-I Recall: st = {pt , at , it }.
-I If there are N products, this has dimension 3N + 1
-
-
-
-Hendel and Nevo (2006): Estimator
-
-I Hendel and Nevo reduce complexity by proposing a 3-step
-estimator:
-1. Maximize likelihood of band choice conditional on size choice
-(static).
-2. Compute inclusive value of each size and transition
-probabilities.
-3. Solve xed point for reduces state space (one price index per
-size)
-
-Hendel and Nevo (2006): Step One
-
-
-V (st ) = Et ,vt max {u(ct , vt , θ) − C (it+1 ; θ) + m(dt ; θ) + E [V (st+1 )|st , dt , ct ]}
-ct dt
-
-I Notice that conditional on choosing a package size, x , brand
-choice , j , does not enter the continuation values.
-I The distribution of tomorrow's state only depends on how
-much detergent you buy, not which band.
-
-I So we can separate the decisions of how much to buy
-(dynamic) and which brand (static).
-
-I Brand CCP:
-exp(αpjxt + ξjx + βajxt )
-k exp(αpkxt + ξkx + βakxt )
-
-P(djx |xt , pt ) = P
-
-I Estimate using simple MLE.
-
-Hendel and Nevo (2006): Step Two
-
-
-V (st ) = Et ,vt max {u(ct , vt , θ) − C (it+1 ; θ) + ωt (xt ) + xt + E [V (st+1 )|st , xt , ct ]}
-ct xt
-
-I Now the problem is only about choosing xt and ct .
-I ωt (xt ) is the period t inclusive value of the static brand
-choice for size t :
-!
-X
-ωt (xt ) = log
-exp(αpkxt + ξkx + βakxt )
-k
-
-I Notice that the high dimensional state variables {pt , at } only
-enter the problem through ωt .
-
-Hendel and Nevo (2006): Step Two
-
-
-V (st ) = Et ,vt max {u(ct , vt , θ) − C (it+1 ; θ) + ωt (xt ) + xt + E [V (st+1 )|st , xt , ct ]}
-ct xt
-
-I Assumption:
-
-Inclusive Value Suciency
-F (ωt |st−1 ) = F (ωt |ωt−1 )
-
-I Then we can reduce the state space to:
-st = {ωt , it }.
-I ωt is a 5-vector.
-I What does this mean?
-I Assume that the quality adjusted price index ωt follows a 1st
-order Markov process.
-
-I Only need to keep track of an index of prices and qualities, not
-individual prices.
-
-I A substantive assumption! (testable)
-
-Hendel and Nevo (2006): Step Two
-
-I Compute ωt using 1st step estimates:
-!
-ωt (xt ) = log
-
-X
-
-exp(αpkxt + ξkx + βakxt )
-
-k
-
-I Then estimate transition process:
-F (ωt |st−1 ) = F (ωt |ωt−1 )
-
-Hendel and Nevo (2006): Step Three
-
-I Finally, can solve the model on the reduced state space using
-value function iteration.
-
-I H&N approximate value function V (st ) using a smooth
-polynomial in st .
-I Use policy functions to get (simulated) likelihood.
-I Remaining parameters: u(c, v ; θ) = γ ln(ct + vt )
-2
-I C (it+1 ; θ) = δ1 it+1 + δ2 it+
-1
-
-Hendel and Nevo (2006): Results
-
-Hendel and Nevo (2006): Results
-
-Hendel and Nevo (2006): Results
-
-Hendel and Nevo (2006): Results
-
-I Static parameters:
-I Large eects from feature and display.
-I Demographics interact with price sensitivity (larger family,
-nonwhite, suburban shoppers more price sensitive).
-
-I Brand preference varies by size.
-
-I Dynamic parameters:
-I Storage cost: suburban < urban.
-
-Hendel and Nevo (2006): Results
-
-I Ratio of static elasticity to dynamic (long run) elasticity.
-I Change in column price on row quantity.
-
-Hendel and Nevo (2006): Results
-
-I Static model ignores inventory problem
-1. Larger static own price elasticity.
-2. Lower static cross price elasticity.
-
-I In the data, response to sales comes from people going from
-not buying to buying the sales brand.
-
-I → in static model, get small cross price elasticities with
-respect to other products, and large cross price elasticity with
-respect to the outside good.
-
-Next Time
-
-I Gowrisankaran and Rysman (2012)
-I Dynamic demand + instruments!
-
-

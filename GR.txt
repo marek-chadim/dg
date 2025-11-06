@@ -1,458 +1,0 @@
-ECON 600: Industrial Organization
-Charles Hodgson
-
-Dynamic Demand: Durable Goods
-
-Durable Goods
-I Cases in which dynamics matter for durable good purchases:
-I Transaction costs and resale markets.
-I E.g. scrappage policy.
-
-I Evolving technology/quality.
-I Buy today v.s. wait for tomorrow?
-I Price elasticity depends on consumers beliefs aboout evolution
-of quality/price.
-I Firm's optimal pricing problem should take account of
-dynamics → lowering price today can cannibalize own sales
-tomorrow.
-
-High Tech Durables CPI
-
-High Tech Durables CPI
-I Today, a 55 4K LCD TV costs $250. In 2006, a 32 720P TV
-cost >$10,000.
-
-I From August 25 to August 2015, prices declined by 87.2%.
-
-I Quality also changes: Reduction in the price of a TV
-understates eect of technological change.
-
-I BLS try to do chaining or quality adjustments in CPI.
-
-I Static demand estimation seems inappropriate in this
-environment.
-
-I If consumers have rational expectations about evolution of
-price and quality.
-I Think about decision to buy electric car.
-
-Gowrisankaran and Rysman (2012): Camcorders
-
-Gowrisankaran and Rysman (2012): Camcorders
-
-I Dynamic model of camcorder purchases during a period of.
-I Falling prices.
-I Increasing quality.
-
-I Allows for:
-I Forward looking consumers to delay adoption.
-I Preferences heterogeneity: early adopters are (endogenously)
-dierent from late adopters.
-I Price endogeneity: time-varying unobservable quality ξjt
-potentially correlated with price.
-
-Gowrisankaran and Rysman (2012): Data
-I Model-month level market share data (market is a month, t ).
-I Like BLP.
-I Contrast to Hendel and Nevo, Rust etc.
-
-I Sales, price, other characteristics from 383 model from
-2000-2006.
-
-Gowrisankaran and Rysman (2012): Model
-
-I Flow utility to consumer i from buying model j at time t :
-uijt = xjt αix − αip ln(pjt ) + ξjt + ijt
-I xjt includes camcorder attributes (size, zoom, screen size).
-I pjt is price.
-I ξjt is time-varying unobserved quality.
-
-Gowrisankaran and Rysman (2012): Model
-I Flow utility to consumer i from holding model j at time t
-(previously purchased):
-
-uijt = xjt αix + ξjt + ijt
-
-I Flow utility to consumer i from holding nothing:
-ui 0t = i 0t
-I Consumers can upgrade at zero cost
-I No second hand market.
-
-I Once consumers own a model, j they can never go back to
-owning model 0 nothing.
-
-I For notational convenience, let's denote u0 as the ow utility
-of whatever the consumer currently owns.
-
-Gowrisankaran and Rysman (2012): Model
-
-uijt = xjt αix − αip ln(pjt ) + ξjt
-(αix , αip ) ∼ N ((αx , αx ), Σ)
-I Σ diagonal.
-I Note that this is the population distribution of preferences.
-I Not the distribution of preferences conditional on holding
-model j at date t.
-
-Gowrisankaran and Rysman (2012): Model
-I Consumer's dynamic problem (dropping i ):
-V (u0 , Ω) = E [max{u0 + βE [V (u0 , Ω0 )|Ω] + 0 ,
-max {uj + βE [V (uj , Ω0 )|Ω] + j }]
-
-j∈1...J
-
-I Ω is the market state that includes all prices and product
-characteristics (including ξjt ), as well as current endowments.
-I Everything that determines product characteristics and
-evolution of product characteristics.
-
-I Suppose Ω evolves according to a Markov process.
-I Consistent with a supply model where products enter
-exogenously, and price is set each period in a Markov perfect
-equilibrium.
-
-Gowrisankaran and Rysman (2012): Model
-V (u0 , Ω) = E [max{u0 + βE [V (u0 , Ω0 )|Ω] + 0 ,
-max {uj + βE [V (uj , Ω0 )|Ω] + j }]
-
-j∈1...J
-
-I Rewrite using Logit:
-
-
-
-X
-
-
-V (u0 , Ω) = log exp u0 + βE [V (u0 , Ω0 )|Ω] +
-exp uj + βE [V (uj , Ω0 )|Ω] 
-j∈1...J
-
-I Rewrite using inclusive value:
-
-
-
-V (u0 , Ω) = log exp u0 + βE [V (u0 , Ω0 )|Ω] + exp(δ(Ω))
-
-
-X
-
-δ(Ω) = log 
-exp uj + βE [V (uj , Ω0 )|Ω] 
-j∈1...J
-
-Gowrisankaran and Rysman (2012): Model
-
-
-
-
-V (u0 , Ω) = log exp u0 + βE [V (u0 , Ω0 )|Ω] + exp(δ(Ω))
-
-
-X
-
-δ(Ω) = log 
-exp uj + βE [V (uj , Ω0 )|Ω] 
-j∈1...J
-
-I δ(Ω) is the PDV of upgrading to the preferred option at state
-Ω.
-I Notice that Ω aects V (u0 , Ω) only through current δ(Ω) and
-predictions of future δ(Ω)
-
-Inclusive Value Suciency (Again)
-
-
-
-
-V (u0 , Ω) = log exp u0 + βE [V (u0 , Ω0 )|Ω] + exp(δ(Ω))
-
-
-X
-
-δ(Ω) = log 
-exp uj + βE [V (uj , Ω0 )|Ω] 
-j∈1...J
-
-I Assume: g (δ(Ω0 )|Ω) = g (δ(Ω0 )|Ω̃) if δ(Ω) = δ(Ω̃).
-I δ(Ω) is a sucient statistic for predictions about future δ(Ω)0 .
-I Substantive assumption.
-
-Inclusive Value Suciency (Again)
-I To compute the continuation values for each choice
-E [V (fj , Ω0 )|Ω], only need to condition on δ :
-
-
-
-V (u0 , δ) = log exp u0 + βE [V (u0 , δ 0 )|δ] + exp(δ)
-
-
-X
-
-δ = log 
-exp uj + βE [V (uj , δ 0 )|δ] 
-j∈1...J
-
-I Reduces state space to a single index for each consumer.
-I Note that δit is consumer type specic because it depends on
-(αix , αip ) which enter uj .
-I Also Vi is consumer type specic...
-
-Inclusive Value Suciency (Again)
-
-I Specify functional form for evolution of δ :
-δt+1 = γ1 + γ2 δt + vt+1
-vt ∼ N(0, σv )
-I Notice that if γ2 ∈ (0, 1), consumers expect δ to converge to
-γ1 /(1 − γ2 ).
-I Intuitively, δ < γ1 /(1 − γ2 ) early in the data,and inclusive
-value expected to rise because of falling prices and improved
-products.
-
-Gowrisankaran and Rysman (2012): Model
-
-I Solving the model for the optimal policy (purchase decisions)
-requires:
-
-
-
-
-V (u0 , δ) = log exp u0 + βE [V (u0 , δ 0 )|δ] + exp(δ)
-
-
-X
-
-δ = log 
-exp uj + βE [V (uj , δ 0 )|δ] 
-j∈1...J
-
-δt+1 = γ1 + γ2 δt + vt+1
-I All three equations to hold.
-
-Gowrisankaran and Rysman (2012): Estimation
-
-I If we had micro-data (as in Hendel and Nevo) we'd be done.
-I Solve model and compute likelihood.
-
-I But here, we have market shares.
-I And a product-market unobservable ξjt (rationalizes market
-shares).
-
-I Idea: for each θ, need to iterate between solving dynamic
-model and performing the BLP contraction mapping...
-
-Estimation: Step One (Inner Loop)
-1. Guess parameters, θ = (α, Σα ).
-2. Initialize values functions V (u0 , δ) = 0.
-3. Initialize ξ = 0
-4. Given value functions, can compute inclusive values:
-
-
-
-
-δ = log 
-
-X
-
-
-exp uj + βE [V (uj , δ 0 )|δ] 
-
-j∈1...J
-5. Draw consumers from F (αi ) (e.g. grid of types). Estimate
-
-δit+1 = γ1 + γ2 δit + vt+1
-6. Iterate Bellman equation:
-
-
-
-
-V (u0 , δ) = log exp u0 + βE [V (u0 , δ 0 )|δ] + exp(δ)
-
-
-X
-
-δ = log 
-exp uj + βE [V (uj , δ 0 )|δ] 
-j∈1...J
-7. Repeat from (4) until convergence
-
-Estimation: Step Two (Middle Loop)
-1. You have solved for Vi (u0 , δ) for a xed vector of parameters θ
-and unobservables ξ .
-2. Simulate market shares.
-
-2.1 Draw consumers at date 0 from F (αi ).
-2.2 Simulate purchases for each consumer, move to date 1.
-2.3 etc. Keeping track of what model each consumer holds.
-3. This generates model-implied market shares for eahch period:
-
-ŝjt (θ, ξ).
-4. Perform BLP contraction mapping by comparing ŝjt (θ, ξ) to
-observed sjt .:
-
-ξ 0 = ξ + log (sjt ) − log (ŝjt (θ, ξ))
-5. Notice that on each iteration, you have to go back and do step
-one (the inner loop) over again!
-
-Estimation: Step Three (Outer Loop)
-
-1. Now you can take a parameters vector, θ , and compute the
-unobservables, ξ , that rationalize the observed market shares!
-2. The rest of the estimation is just like BLP.
-3. Form moments, E (ξjt zjt ) = 0
-4. Apply GMM.
-
-I BLP + dynamic consistency restriction.
-I Have to assume a unique xed point exists for this whole thing
-(try dierent starting values).
-
-Identication & Instruments
-I Identication is similar to BLP.
-I The addition of dynamic consistency in choices actually
-provides additional identifying power.
-
-I Intertemporal substitution.
-I E.g. a price reduction for a low quality mode at date t should
-induce substitution from similat models at date t + 1.
-
-I BLP-type instruments:
-I Model characteristics of same and other rms.
-I Model count of same and other rms.
-
-I Note: cannot directly observe repeated purchases (or who
-bought what).
-
-I Micro-data would add identifying power.
-
-G&R: Results
-
-I Column 4 includes micro-moment on penetration (share of
-households holding some model).
-
-G&R: Results
-
-G&R: Results
-
-I BLS and Pakes COLI are basically Laspeyres:
-
-P
-j pjt+1 sjt
-P
-j pjt sjt
-
-shows how the value of the market increasing over time.
-
-I COLI from model is essentially growth in mean utility from
-sales at date t . Notice divergence.
-I Dynamic selection of heterogeneous consumers.
-
-Hodgson (2023)
-
-I Durable goods demand with a resale market.
-I Also see Schrialdi (2011).
-
-I Combine BLP approach with micro-moments.
-I Can see which consumers upgraded from j to k at each date.
-
-Hodgson (2023): Setting
-I Market for Business Jets: 1961-2000.
-I Concentrated market for new jets.
-I Active resale market.
-I Data on full history of ownership from FAA.
-
-Hodgson (2023): Setting
-
-I Why do manufacturers accept own brand trade-ins?
-I If there are transaction costs to upgrading, consumers will hold
-old models when they might prefer to buy a new model.
-I Trade-ins modeled as a way to reduce transaction costs for
-upgrading consumers.
-
-I But trade-ins are resold on the used market!
-I Increase in supply of used jets can cannibalize new jet sales.
-I First time buyers benet from lower used jet prices.
-
-Hodgson (2023): Model
-I Consumer i gets ow utilities:
-i
-ujjt
-
-= γijt + ijt
-
-i
-ukjt
-uki 0t
-
-= γijt + γ̃kj + (pkt − pjt ) αip − τikj + ijt
-= pkt αip − τik 0 + i 0t .
-
-I τijk is the transaction cost for upgrading from j to k .
-I Unlike in G&R, consumers can sell model j and drop out of
-market (alternative 0).
-
-I Assume τijk is reduced if j and k same brand and k is new
-(same-brand trade in):
-
-
-τikj = τ − newjt 1(m(j) = m(k))bm(j) 1(j 6= 0)+τ exit 1(j = 0)+νiτ
-
-Hodgson (2023): Model
-
-Vi (k, Ωit , it ) = max
-
-k∈Jt ∪0
-
-n
-o
-i
-uj(i,t)k
-+ ikt + E [δikt+1 |Ωit ]
-
-I Consumer's problem looks pretty similar to G&R.
-I Make inclusive value assumption.
-I Now, inclusive value depends on what model you currently
-hold.
-
-I eligibility for trade-ins varies by model held.
-
-Hodgson (2023): Estimation
-I Estimation uses BLP-moments and micro-moments:
-
-Hodgson (2023): Results
-
-I Solve for equilibrium new and used jet prices.
-I Firms maximize static prot.
-I All used jet markets clear!
-
-Hodgson (2023): Results
-I Use the estimated model that under reasonable assumptions
-on the cost of trade-ins to the rm...
-
-I e.g. rms eat the transaction costs that consumers don't have
-to pay if they trade in.
-
-I Then all rms oering trade-ins is a prisoners' dilemma
-equilibrium!
-
-I Cessna only accepts trade-ins because all other rms accept
-trade-ins.
-
-I Under a hypothetical merger between Cessa and Learjet,
-trade-ins would no longer be optimal.
-
-Hodgson (2023): Results
-
-Hodgson (2023)
-
-I By the way, this started out as my second year paper.
-I No dynamics in rst version.
-I Repeated static choice.
-
-I Started work 2015 - published 2023.
-I Try to be faster than this.
-
-Next Time
-
-I Estimation of dynamic discrete choice games
-I Bajari, Benkard, and Levin (2007)
-
-

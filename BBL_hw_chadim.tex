@@ -1,0 +1,262 @@
+\documentclass[english,11pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{amsmath}
+\usepackage{babel}
+\usepackage[symbol]{footmisc}
+\usepackage{amsfonts}
+\usepackage{makecell}
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\usepackage{fullpage}
+\usepackage{hyperref,url}
+\setcounter{MaxMatrixCols}{10}
+
+\begin{document}
+
+\begin{center}
+\textbf{Economics 600a}
+\textbf{Yale University, Fall 2025}
+
+\textbf{Dynamic Entry/Exit Game Homework}
+
+\textbf{Marek Chadim}\footnote{marek.chadim@yale.edu}\footnote{Replication notebook available at: https://github.com/marek-chadim/entry}
+
+
+\end{center}
+
+\bigskip
+
+\section{Overview}
+
+This assignment analyzes a dynamic entry and exit game where firms producing homogeneous products compete in quantity-setting (Cournot) competition each period. The model incorporates stochastic demand shifters, private information about exit values and entry costs, and strategic interactions through the equilibrium number of firms. Using the BBL estimation approach, we solve for the equilibrium policy functions and estimate structural parameters from simulated data.
+
+\section{Model Setup}
+
+\subsection{Static Competition}
+
+In each time period $t$, active firms play a simultaneous-move Nash quantity-setting game. The market-level inverse demand curve is:
+\begin{equation*}
+p_t = 10 - Q_t + x_t
+\end{equation*}
+where $Q_t$ is total quantity produced by all firms and $x_t$ is a demand shifter taking values in $\{-5, 0, 5\}$.
+
+All firms have:
+\begin{itemize}
+\item Marginal cost: $MC = 0$
+\item Fixed cost: $F = 5$ per period
+\end{itemize}
+
+\subsection{Dynamic Entry and Exit}
+
+\textbf{Demand Evolution:} The demand shifter $x_t$ follows a first-order Markov process with transition matrix:
+\begin{equation*}
+\text{Pr}(x_{t+1} | x_t) = 
+\begin{array}{c|ccc}
+ & x_{t+1}=-5 & x_{t+1}=0 & x_{t+1}=5 \\
+\hline
+x_t=-5 & 0.6 & 0.2 & 0.2 \\
+x_t=0 & 0.2 & 0.6 & 0.2 \\
+x_t=5 & 0.2 & 0.2 & 0.6
+\end{array}
+\end{equation*}
+
+\textbf{Exit Process:} Each active firm receives a private sell-off value:
+\begin{equation*}
+\mu_{it} \sim N(\mu, \sigma^2_\mu)
+\end{equation*}
+i.i.d. across firms and time. If a firm exits at period $t$, it receives $\mu_{it}$ and leaves the market forever. The value function for an active firm is:
+\begin{equation*}
+V(N_t, x_t, \mu_{it}) = \max_{d_{it} \in \{0,1\}} \left\{ \mu_{it}, \pi(N_t, x_t) + 0.9 \mathbb{E}[V(N_{t+1}, x_{t+1}, \mu_{it+1}) | N_t, x_t, d_{it}=1] \right\}
+\end{equation*}
+where $d_{it} = 0$ if the firm exits and $d_{it} = 1$ if it stays.
+
+\textbf{Entry Process:} Each period, one potential entrant faces a private entry cost:
+\begin{equation*}
+\gamma_{it} \sim N(\gamma, \sigma^2_\gamma)
+\end{equation*}
+i.i.d. across time. If the firm enters at $t$, it pays $-\gamma_{it}$ in period $t$ and begins production in period $t+1$. The value function for a potential entrant is:
+\begin{equation*}
+V^E(N_t, x_t, \gamma_{it}) = \max_{e_{it} \in \{0,1\}} \left\{ 0, -\gamma_{it} + 0.9 \mathbb{E}[V(N_{t+1}, x_{t+1}, \mu_{it+1}) | N_t, x_t, e_{it}=1] \right\}
+\end{equation*}
+where $e_{it} = 1$ if the firm enters.
+
+\subsection{Equilibrium Concept}
+
+We focus on symmetric Markov-Perfect Nash Equilibria with cutoff strategies:
+\begin{align*}
+\text{Incumbent:} \quad d_{it} &= \begin{cases} 0 & \text{if } \mu_{it} > \mu(N_t, x_t) \\ 1 & \text{if } \mu_{it} \leq \mu(N_t, x_t) \end{cases} \\
+\text{Entrant:} \quad e_{it} &= \begin{cases} 0 & \text{if } \gamma_{it} > \gamma(N_t, x_t) \\ 1 & \text{if } \gamma_{it} \leq \gamma(N_t, x_t) \end{cases}
+\end{align*}
+
+\textbf{State Space:} Maximum of 5 firms, so $N_t \in \{0, 1, 2, 3, 4, 5\}$ and $x_t \in \{-5, 0, 5\}$, giving 18 possible states. The equilibrium is characterized by 30 relevant cutoff values (excluding $\mu(0, x_t)$ and $\gamma(5, x_t)$).
+
+\section{Questions}
+
+\subsection{Derive $\pi(N_t, x_t)$}
+
+Derive the formula for Nash equilibrium single-period profits per firm as a function of the total number of firms $N_t$ and demand shifter $x_t$.
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Intuition for Cutoff Equilibrium}
+
+Why does a cutoff equilibrium make intuitive sense in this setup?
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Interpretation of $\bar{V}(N_t, x_t)$}
+
+Describe (at an intuitive level) what $\bar{V}(N_t, x_t)$ measures. How does this relate to the alternative specific value functions of Rust (1987)?
+
+Note: $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Solve for Equilibrium}
+
+Assume parameters: $\gamma = 5$, $\sigma^2_\gamma = 5$, $\mu = 5$, $\sigma^2_\mu = 5$. Solve for equilibrium using the iterative procedure outlined in the problem.
+
+\textbf{Algorithm:}
+\begin{enumerate}
+\item Guess $\mu(N_t, x_t)$, $\gamma(N_t, x_t)$, and $\bar{V}(N_t, x_t)$
+\item Compute transition matrices $\Pr(N_{t+1} | N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1} | N_t, x_t, e_{it}=1)$
+\item Compute:
+\begin{align*}
+\Psi_1(N_t, x_t) &= 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, d_{it}=1) \\
+\Psi_2(N_t, x_t) &= 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, e_{it}=1)
+\end{align*}
+\item Update cutoffs:
+\begin{align*}
+\mu'(N_t, x_t) &= \pi(N_t, x_t) + \Psi_1(N_t, x_t) \\
+\gamma'(N_t, x_t) &= \Psi_2(N_t, x_t)
+\end{align*}
+\item Update value function:
+\begin{align*}
+\bar{V}'(N_t, x_t) &= \left[1 - \Phi\left(\frac{\pi(N_t, x_t) + \Psi_1(N_t, x_t) - \mu}{\sigma_\mu}\right)\right] \left[\mu + \sigma_\mu \frac{\phi(\cdot)}{1-\Phi(\cdot)}\right] \\
+&\quad + \Phi\left(\frac{\pi(N_t, x_t) + \Psi_1(N_t, x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t, x_t) + \Psi_1(N_t, x_t)]
+\end{align*}
+\item Iterate until convergence
+\end{enumerate}
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Multiple Equilibria}
+
+Try resolving for equilibrium starting with 5 different initial guesses. Do you find any evidence of multiple equilibria?
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Equilibrium Values}
+
+At the equilibrium, report: $\mu(3, 0)$, $\gamma(3, 0)$, $\bar{V}(3, 0)$, and $V(3, 0, -2)$.
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Market Simulation}
+
+Starting with $N_0 = 0$ and $x_0 = 0$, simulate the market for 10,000 periods. What is the average number of firms across these periods?
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Entry Tax}
+
+Suppose the government implements a 5-unit entry tax. What happens to the average number of firms in equilibrium? Can you answer this if there are multiple equilibria? Why or why not?
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{BBL Estimation}
+
+Using simulated data from Question 7, estimate $\gamma$, $\sigma^2_\gamma$, $\mu$, and $\sigma^2_\mu$ using a BBL-like estimator. Assume you know everything except these 4 parameters.
+
+\textbf{Estimation Procedure:}
+
+\textbf{Step A:} Estimate reduced-form policy functions $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$ from data using frequency estimator.
+
+\textbf{Step B:} For each parameter guess $(\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$, forward simulate the PDV for one incumbent (Firm 1) at each state, conditional on not exiting initially.
+
+Firms stay if: $\Phi\left(\frac{\mu_{it} - \mu}{\sigma_\mu}\right) \leq \hat{d}(N_t, x_t)$
+
+Entrants enter if: $\Phi\left(\frac{\gamma_{it} - \gamma}{\sigma_\gamma}\right) \leq \hat{e}(N_t, x_t)$
+
+\textbf{Step C:} Average 50 forward simulations for each of 15 states to get $\Lambda(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$.
+
+\textbf{Step D:} Note that firms stay if $\mu_{it} < \Lambda(N_t, x_t)$, which occurs with probability:
+\begin{equation*}
+\Pr(\text{stay} | N_t, x_t) = \Phi\left(\frac{\Lambda(N_t, x_t) - \mu}{\sigma_\mu}\right) \approx \hat{d}(N_t, x_t)
+\end{equation*}
+
+\textbf{Step E:} Similarly compute $\Lambda^E(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ for entrants:
+\begin{equation*}
+\Pr(\text{enter} | N_t, x_t) = \Phi\left(\frac{\Lambda^E(N_t, x_t) - \gamma}{\sigma_\gamma}\right) \approx \hat{e}(N_t, x_t)
+\end{equation*}
+
+\textbf{Step F:} Minimize the criterion:
+\begin{equation*}
+\min \sum_{N_t=1}^{5} \sum_{x_t} \left[\Phi\left(\frac{\Lambda - \mu}{\sigma_\mu}\right) - \hat{d}\right]^2 + \sum_{N_t=0}^{4} \sum_{x_t} \left[\Phi\left(\frac{\Lambda^E - \gamma}{\sigma_\gamma}\right) - \hat{e}\right]^2
+\end{equation*}
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\subsection{Estimation Performance}
+
+Does your estimation procedure do a good job of estimating the true parameters? (Standard errors not required.)
+
+\textbf{Answer:}
+
+[Solution to be provided]
+
+\section{Implementation Notes}
+
+The following code structure will be used for implementation:
+
+\begin{verbatim}
+import numpy as np
+from scipy.stats import norm
+from scipy.optimize import minimize
+import pandas as pd
+
+# Set random seed for reproducibility
+np.random.seed(1995)
+
+# Parameters
+gamma_true, sigma2_gamma_true = 5, 5
+mu_true, sigma2_mu_true = 5, 5
+beta = 0.9  # Discount factor
+
+# State space
+N_states = [0, 1, 2, 3, 4, 5]
+x_states = [-5, 0, 5]
+
+# Transition matrix for x_t
+P_x = np.array([[0.6, 0.2, 0.2],
+                [0.2, 0.6, 0.2],
+                [0.2, 0.2, 0.6]])
+
+# Implementation to follow...
+\end{verbatim}
+
+\bibliographystyle{ecta}
+\bibliography{BBL_hw_chadim}
+
+\end{document}

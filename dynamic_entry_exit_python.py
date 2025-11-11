@@ -62,26 +62,25 @@ class DynamicEntryExitGame:
         self._initialize_values()
     
     def _initialize_values(self):
-        """Initialize guesses per homework Step 1.
-
-        Homework specifies we simply 'guess' μ(N,x), γ(N,x), V̄(N,x).
-        Use:
-          μ_guess(N,x)   = π(N,x)            (only for N>0)
-          γ_guess(N,x)   = 0                 (only for N<max_N)
-          V̄_guess(N,x)  = π(N,x)/(1-β)      (only for N>0)
-        These are natural myopic-based starting values without shifting by μ̄ or γ̄.
-        """
+        """Initialize with homework Step 1 myopic guesses"""
         for N in range(self.p.max_N + 1):
             self.mu_cuts[N] = {}
             self.gamma_cuts[N] = {}
             self.V_bar[N] = {}
+            
             for x in self.p.x_values:
                 pi = self.profit(N, x)
+                
+                # Homework Step 1: μ(N,x) = π(N,x), γ(N,x) = 0, V̄(N,x) = π(N,x)/(1-β)
                 if N > 0:
-                    self.mu_cuts[N][x] = pi  # exit cutoff initial guess
+                    self.mu_cuts[N][x] = pi
                     self.V_bar[N][x] = pi / (1 - self.p.beta)
-                if N < self.p.max_N:
-                    self.gamma_cuts[N][x] = 0.0  # entry cutoff initial guess
+                else:
+                    self.mu_cuts[N][x] = 0.0
+                    self.V_bar[N][x] = 0.0
+                
+                # Entry cutoff starts at 0
+                self.gamma_cuts[N][x] = 0.0
     
     def profit(self, N: int, x: int) -> float:
         """
@@ -96,10 +95,7 @@ class DynamicEntryExitGame:
     
     def compute_transition_probs(self) -> Tuple[Dict, Dict]:
         """
-        Compute state transition probabilities consistent with homework setup:
-        Exactly one potential entrant per period; in the entrant case there is no
-        "secondary" entrant after the focal potential entrant. In incumbent case,
-        potential entrant may enter (at most one entrant total in the period).
+        Compute state transition probabilities.
         
         Returns:
             P_stay: Pr(N_{t+1} | N_t, x_t, incumbent stays)
@@ -120,37 +116,38 @@ class DynamicEntryExitGame:
                 z_stay = (self.mu_cuts[N][x] - self.p.mu_bar) / self.p.sigma_mu
                 p_stay = norm.cdf(z_stay)
                 
-                # Incumbent case: focal firm stays, other N-1 decide; THEN at most one entrant
+                # For focal incumbent staying, other N-1 firms decide
                 for n_other_stay in range(N):
                     binom_prob = comb(N - 1, n_other_stay, exact=True) * \
                                 p_stay**n_other_stay * (1 - p_stay)**(N - 1 - n_other_stay)
-                    N_after_incumbents = n_other_stay + 1  # include focal
-                    if N_after_incumbents < self.p.max_N:
-                        # Single potential entrant decides
-                        z_enter = (self.gamma_cuts[N_after_incumbents][x] - self.p.gamma_bar) / self.p.sigma_gamma
+                    
+                    N_next = n_other_stay + 1  # +1 for focal firm
+                    
+                    if N_next < self.p.max_N:
+                        # Potential entrant decides
+                        z_enter = (self.gamma_cuts[N_next][x] - self.p.gamma_bar) / self.p.sigma_gamma
                         p_enter = norm.cdf(z_enter)
-                        # Either no entry (stay at N_after_incumbents) or one entry (N_after_incumbents+1)
-                        P_stay[x][N][N_after_incumbents] += binom_prob * (1 - p_enter)
-                        P_stay[x][N][N_after_incumbents + 1] += binom_prob * p_enter
+                        
+                        P_stay[x][N][N_next + 1] += binom_prob * p_enter
+                        P_stay[x][N][N_next] += binom_prob * (1 - p_enter)
                     else:
-                        # Capacity reached; no entry possible
-                        P_stay[x][N][N_after_incumbents] += binom_prob
-
-                # Entrant case: focal entrant enters first (N increases by 1), incumbents then decide.
-                # No secondary entrant this period.
+                        P_stay[x][N][N_next] += binom_prob
+                
+                # For entrant entering, all N incumbents decide
+                # NO second potential entrant (homework specification)
                 if N < self.p.max_N:
                     for n_stay in range(N + 1):
                         binom_prob = comb(N, n_stay, exact=True) * \
                                     p_stay**n_stay * (1 - p_stay)**(N - n_stay)
-                        N_next = n_stay + 1  # entrant count adds exactly one
-                        P_enter[x][N][min(N_next, self.p.max_N)] += binom_prob
+                        
+                        N_next = n_stay + 1  # +1 for entrant (already entered)
+                        P_enter[x][N][N_next] += binom_prob
         
         return P_stay, P_enter
     
-    def update_continuation_values(self, P_stay: Dict, P_enter: Dict, V_old: Dict) -> Tuple[Dict, Dict]:
+    def update_continuation_values(self, P_stay: Dict, P_enter: Dict) -> Tuple[Dict, Dict]:
         """
         Compute Ψ₁ and Ψ₂: expected discounted continuation values.
-        Uses V_old from previous iteration for proper value function iteration.
         """
         Psi1 = {x: {} for x in self.p.x_values}
         Psi2 = {x: {} for x in self.p.x_values}
@@ -163,14 +160,16 @@ class DynamicEntryExitGame:
                 for x_next in self.p.x_values:
                     p_x = self.x_transition[x][x_next]
                     
-                    for N_next in range(1, self.p.max_N + 1):
-                        # Use V_old, not self.V_bar (from previous iteration)
-                        psi1 += self.p.beta * V_old[N_next][x_next] * \
-                               p_x * P_stay[x][N][N_next]
-                        
-                        if N < self.p.max_N:
-                            psi2 += self.p.beta * V_old[N_next][x_next] * \
-                                   p_x * P_enter[x][N][N_next]
+                    # Sum over ALL possible N_next values (0 to max_N)
+                    for N_next in range(0, self.p.max_N + 1):
+                        # V̄(0,x) = 0, so only add if N_next > 0
+                        if N_next > 0:
+                            psi1 += self.p.beta * self.V_bar[N_next][x_next] * \
+                                   p_x * P_stay[x][N][N_next]
+                            
+                            if N < self.p.max_N:
+                                psi2 += self.p.beta * self.V_bar[N_next][x_next] * \
+                                       p_x * P_enter[x][N][N_next]
                 
                 Psi1[x][N] = psi1
                 if N < self.p.max_N:
@@ -178,28 +177,22 @@ class DynamicEntryExitGame:
         
         return Psi1, Psi2
     
-    def update_integrated_value(self, N: int, x: int, delta: float, pi: float, psi1: float) -> float:
+    def update_integrated_value(self, N: int, x: int, delta: float) -> float:
         """
         Update V̄(N,x) using closed-form truncated normal formula.
         
-        CORRECTED FORMULA:
-        V̄(N,x) = Pr(stay) × [π + Ψ₁] + Pr(exit) × E[μ|exit]
-               = Φ(z) × δ + [1-Φ(z)] × [μ̄ + σ_μ·λ(z)]
+        V̄(N,x) = ∫ max{μ, δ} dΦ(μ)
+               = [1-Φ(z)][μ̄ + σ_μ·λ(z)] + Φ(z)·δ
         
-        where:
-        - δ = π + Ψ₁ is the stay value (exit cutoff)
-        - z = (δ - μ̄)/σ_μ
-        - λ(z) is inverse Mills ratio
+        where z = (δ - μ̄)/σ_μ and λ(z) is inverse Mills ratio.
         """
         z = (delta - self.p.mu_bar) / self.p.sigma_mu
         
         # Handle numerical extremes
         if z > 10:  # Everyone exits
-            # Use approximation for large z: λ(z) ≈ 1/z
-            mills_approx = 1.0 / z if z > 0 else 0
-            return self.p.mu_bar + self.p.sigma_mu * mills_approx
-        elif z < -10:  # Nobody exits, all stay
-            return pi + psi1  # Stay value = π + Ψ₁
+            return delta
+        elif z < -10:  # Nobody exits
+            return self.p.mu_bar
         
         # Standard calculation
         phi_z = norm.pdf(z)
@@ -208,16 +201,18 @@ class DynamicEntryExitGame:
         # Inverse Mills ratio with numerical protection
         mills_ratio = phi_z / max(1 - Phi_z, 1e-10)
         
-        # V̄ = Pr(stay) × [π + Ψ₁] + Pr(exit) × E[μ|exit]
-        stay_term = Phi_z * delta  # Note: delta = π + Ψ₁
         exit_term = (1 - Phi_z) * (self.p.mu_bar + self.p.sigma_mu * mills_ratio)
+        stay_term = Phi_z * delta
         
-        return stay_term + exit_term
+        return exit_term + stay_term
     
-    def solve_equilibrium(self, max_iter: int = 200, tol: float = 1e-6, 
-                         damping: float = 0.0, verbose: bool = True) -> Dict:
+    def solve_equilibrium(self, max_iter: int = 500, tol: float = 1e-10, 
+                         verbose: bool = True, damping: float = 0.0) -> Dict:
         """
-        Solve for Markov Perfect Equilibrium using Gauss-Seidel iteration.
+        Solve for Markov Perfect Equilibrium using Gauss-Seidel iteration with damping.
+        
+        Args:
+            damping: Damping factor (0=full update, 1=no update). Default 0.0 for no damping.
         
         Returns:
             Dictionary with converged policies and values
@@ -229,44 +224,45 @@ class DynamicEntryExitGame:
             mu_old = {N: {x: self.mu_cuts[N][x] for x in self.p.x_values} 
                      for N in range(1, self.p.max_N + 1)}
             gamma_old = {N: {x: self.gamma_cuts[N][x] for x in self.p.x_values} 
-                        for N in range(self.p.max_N)}
+                        for N in range(0, self.p.max_N)}
             V_old = {N: {x: self.V_bar[N][x] for x in self.p.x_values} 
                     for N in range(1, self.p.max_N + 1)}
             
             # Step 1: Compute transition matrices
             P_stay, P_enter = self.compute_transition_probs()
             
-            # Step 2: Compute continuation values (using V_old)
-            Psi1, Psi2 = self.update_continuation_values(P_stay, P_enter, V_old)
+            # Step 2: Compute continuation values
+            Psi1, Psi2 = self.update_continuation_values(P_stay, P_enter)
             
-            # Step 3: Update cutoffs and values (with optional damping)
+            # Step 3: Update cutoffs with damping (Jacobi style - all at once)
+            mu_new_dict = {}
+            gamma_new_dict = {}
+            
             for N in range(1, self.p.max_N + 1):
                 for x in self.p.x_values:
                     pi = self.profit(N, x)
                     
-                    # Update exit cutoff (indifference condition)
+                    # Compute new exit cutoff
                     mu_new = pi + Psi1[x][N]
-                    if damping > 0:
-                        self.mu_cuts[N][x] = damping * mu_new + (1 - damping) * mu_old[N][x]
-                    else:
-                        self.mu_cuts[N][x] = mu_new
+                    mu_new_dict[(N, x)] = (1 - damping) * mu_new + damping * mu_old[N][x]
                     
-                    # Update entry cutoff
+                    # Compute new entry cutoff
                     if N < self.p.max_N:
                         gamma_new = Psi2[x][N]
-                        if damping > 0:
-                            self.gamma_cuts[N][x] = damping * gamma_new + (1 - damping) * gamma_old[N][x]
-                        else:
-                            self.gamma_cuts[N][x] = gamma_new
-                    
-                    # Update integrated value function
-                    V_new = self.update_integrated_value(
-                        N, x, self.mu_cuts[N][x], pi, Psi1[x][N]
-                    )
-                    if damping > 0:
-                        self.V_bar[N][x] = damping * V_new + (1 - damping) * V_old[N][x]
-                    else:
-                        self.V_bar[N][x] = V_new
+                        gamma_new_dict[(N, x)] = (1 - damping) * gamma_new + damping * gamma_old[N][x]
+            
+            # Apply all cutoff updates at once
+            for N in range(1, self.p.max_N + 1):
+                for x in self.p.x_values:
+                    self.mu_cuts[N][x] = mu_new_dict[(N, x)]
+                    if N < self.p.max_N:
+                        self.gamma_cuts[N][x] = gamma_new_dict[(N, x)]
+            
+            # Now update all V_bar values using the new cutoffs
+            for N in range(1, self.p.max_N + 1):
+                for x in self.p.x_values:
+                    V_new = self.update_integrated_value(N, x, self.mu_cuts[N][x])
+                    self.V_bar[N][x] = (1 - damping) * V_new + damping * V_old[N][x]
             
             # Check convergence
             max_diff = 0.0
@@ -277,11 +273,6 @@ class DynamicEntryExitGame:
                         abs(self.mu_cuts[N][x] - mu_old[N][x]),
                         abs(self.V_bar[N][x] - V_old[N][x])
                     )
-            
-            # Check gamma cutoffs too
-            for N in range(self.p.max_N):
-                for x in self.p.x_values:
-                    max_diff = max(max_diff, abs(self.gamma_cuts[N][x] - gamma_old[N][x]))
             
             self.convergence_history.append({
                 'iteration': iteration,
@@ -312,18 +303,15 @@ class DynamicEntryExitGame:
         Compute V(N, x, μ) for specific exit value.
         
         Used for Question 6: V(3, 0, -2)
-        
-        CORRECTED:
-        If μ ≤ μ̄(N,x): firm stays, gets V̄(N,x)
-        If μ > μ̄(N,x): firm exits, gets μ
         """
-        delta = self.mu_cuts[N][x]  # Exit cutoff μ̄(N,x)
+        delta = self.mu_cuts[N][x]
+        pi = self.profit(N, x)
         
         if mu <= delta:
-            # Firm stays: gets integrated value
-            return self.V_bar[N][x]
+            # Firm stays
+            return pi - mu + self.p.beta * self.V_bar[N][x]
         else:
-            # Firm exits: gets exit value
+            # Firm exits
             return mu
     
     def print_results(self):
@@ -450,7 +438,7 @@ if __name__ == "__main__":
     
     # Solve for equilibrium
     print("\nSolving for Markov Perfect Equilibrium...")
-    results = game.solve_equilibrium(tol=1e-8, max_iter=1000, damping=0.0, verbose=True)
+    results = game.solve_equilibrium(verbose=True)
     
     # Display results
     game.print_results()

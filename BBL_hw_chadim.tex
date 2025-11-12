@@ -1,0 +1,267 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm,amssymb,amsfonts,enumitem,fancyhdr,color,comment,graphicx,environ,verbatim}
+\usepackage{natbib}
+\usepackage{hyperref,url}
+\pagestyle{fancy}
+\setlength{\headheight}{30pt}
+
+\newtheorem{problem}{Problem}
+\newenvironment{sol}
+  {\noindent\textbf{Solution.}}
+  {\qed}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lhead{Marek Chadim (mc3879) \\ marek.chadim@yale.edu}
+\rhead{Economics 600a, Fall 2025 \\  Dynamic Entry/Exit Game}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\section*{Model Setup}
+
+Suppose that in each time period, a set of firms producing homogeneous products play a simultaneous move Nash quantity-setting game.
+The market-level inverse demand curve in market in time $t$ is given by $p_t = 10 - Q_t + x_t$ where $Q_t$ is the total quantity produced by all the firms, and $x_t$ is a demand shifter.
+Assume that all firms have 1) a marginal cost of 0, and 2) a fixed cost of operation of 5 per-period.
+Next, consider the dynamic entry and exit process. First, assume that the demand shifter $x_t$ takes on 3 possible values $\{-5, 0, 5\}$, and that this evolves over time according to the following first order Markov transition matrix (e.g. given $x_t = 5$, the probability that $x_{t+1} = -5$ is 0.2):
+
+\begin{center}
+\begin{tabular}{c|ccc}
+ & \multicolumn{3}{c}{$x_{t+1}$} \\
+ & $-5$ & $0$ & $5$ \\
+\hline
+$x_t = -5$ & $0.6$ & $0.2$ & $0.2$ \\
+$x_t = 0$ & $0.2$ & $0.6$ & $0.2$ \\
+$x_t = 5$ & $0.2$ & $0.2$ & $0.6$
+\end{tabular}
+\end{center}
+
+For the exit process, assume that in each period, each active firm gets a 
+stochastic sell off value $\mu_{it} \sim N(\mu, \sigma^2_\mu)$. This value $\mu_{it}$ is assumed to be private information for the firm, and it is assumed to be i.i.d.
+across firms and time. If a firm decides to exit at period $t$, it receives current payoff of just $\mu_{it}$ (note that this is slightly different than the model in class) and is then out of the market forever.
+This implies that the value function for an active firm is
+\[V(N_t, x_t, \mu_{it}) = \max_{d_{it} \in \{0,1\}} \left\{ \mu_{it}, \pi(N_t, x_t) + 0.9\mathbb{E}[V(N_{t+1}, x_{t+1}, \mu_{it+1}) |
+N_t, x_t, d_{it}=1] \right\}\]
+where $d_{it} = 0$ if the firm exits and $d_{it} = 1$ if the firm remains in the market.
+For the entry process, assume that in each period, there is one ``potential entrant'' into the market.
+This potential entrant is endowed with a stochastic entry cost $\gamma_{it} \sim N(\gamma, \sigma^2_\gamma)$ that they must pay to enter the market ($\gamma_{it}$ is also private information to the entrant and assumed iid across time).
+If the firm decides to enter at $t$, their single period payoffs at $t$ are $-\gamma_{it}$ - i.e. they only begin to produce and make profits in the next period.
+If the firm decides not to enter at $t$, they disappear from the market forever.
+This implies that the value function for a potential entrant is:
+\[V^E(N_t, x_t, \gamma_{it}) = \max_{e_{it} \in \{0,1\}} \left\{ 0, -\gamma_{it} + 0.9\mathbb{E}[V(N_{t+1}, x_{t+1}, \mu_{it+1}) |
+N_t, x_t, e_{it}=1] \right\}\]
+where $e_{it} = 1$ if the firm enters and $e_{it} = 0$ if the firm does not enter the market.
+We will focus attention on symmetric Markov-Perfect Nash Equilibria of this game that take the following ``cutoff'' form:
+\begin{align*}
+\text{For an incumbent firm:} \quad d_{it} &= \begin{cases} 0 & \text{if } \mu_{it} > \mu(N_t, x_t) \\ 1 & \text{if } \mu_{it} \leq \mu(N_t, x_t) \end{cases} \\
+\text{For a potential entrant:} \quad e_{it} &= \begin{cases} 0 & \text{if } \gamma_{it} > \gamma(N_t, x_t) \\ 1 & \text{if } \gamma_{it} \leq \gamma(N_t, x_t) \end{cases}
+\end{align*}
+
+Assume that the maximum number of firms in the market is 5 (i.e. when $N_t = 5$, assume that the entry cost $\gamma_{it}$ is $\infty$ with probability 1).
+This means that there are 18 possible values of the state i.e. $N_t \in \{0, 1, 2, ..., 5\}$, $x_t \in \{-5, 0, 5\}$.
+Therefore, equilibrium can be summarized by 36 cutoff numbers, $\mu(N_t, x_t)$ at each of the 18 possible states, and $\gamma(N_t, x_t)$ at each of the 18 possible states.
+Actually, note that only 30 of these numbers are relevant, since in states where $N_t = 0$ there are no incumbents (so $\mu(0, x_t)$ is irrelevant), and in states where $N_t = 5$ there can be no entry (so $\gamma(5, x_t)$ is irrelevant).
+Defining $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$, we can write the value functions as:
+\begin{align*}
+V(N_t, x_t, \mu_{it}) &= \max_{d_{it} \in \{0,1\}} \left\{ \mu_{it}, \pi(N_t, x_t) + 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, d_{it}=1) \right\} \\
+V^E(N_t, x_t, \gamma_{it}) &= \max_{e_{it} \in \{0,1\}} \left\{ 0, -\gamma_{it} + 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, e_{it}=1) \right\}
+\end{align*}
+
+Note that $\bar{V}(N_t, x_t)$ is not defined when $N_t = 0$ (this follows because $V(N_t, x_t, \mu_{it})$ is not defined at $N_t = 0$, i.e. there is no value function for an incumbent at $N_t = 0$ because there is no incumbent with 
+$N_t = 0$).
+
+\begin{problem}
+Given these cost and demand primitives, derive a equation expressing the Nash-equilibrium single period profits per firm, as depending on the total number of firms $N_t$ and the demand shifter $x_t$.
+In other words, derive the formula for $\pi(N_t, x_t)$. This formula will be useful for the computations later.
+\end{problem}
+
+\begin{sol}
+In the Cournot game with $N_t$ symmetric firms, each firm chooses quantity $q_i$ to maximize $q_i(10 - q_i - Q_{-i} + x_t) - 5$, where $Q_{-i}$ denotes the total quantity produced by other firms.
+The first-order condition is $10 - 2q_i - Q_{-i} + x_t = 0$.
+In symmetric Nash equilibrium, all firms produce the same quantity $q^*$, so $Q_{-i} = (N_t - 1)q^*$.
+Substituting yields $10 - 2q^* - (N_t - 1)q^* + x_t = 0$, which implies $q^* = (10 + x_t)/(N_t + 1)$.
+The equilibrium price equals $p^* = 10 - N_t q^* + x_t = (10 + x_t)/(N_t + 1)$, which equals $q^*$ given zero marginal cost.
+Per-firm profits are therefore $\pi(N_t, x_t) = p^* \cdot q^* - 5 = [(10 + x_t)/(N_t + 1)]^2 - 5$.
+\end{sol}
+
+\begin{problem}
+Why does a cutoff equilibrium make intuitive sense in this setup?
+\end{problem}
+
+\begin{sol}
+A cutoff equilibrium is intuitive because the continuation value from staying, $\pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, is independent of $\mu_{it}$, while the exit payoff is $\mu_{it}$ itself. Because one function (the value of staying) is flat with respect to $\mu_{it}$ and the other (the value of exiting) is strictly increasing, their payoff schedules can cross at most one time. This guarantees a unique indifference cutoff $\mu(N_t, x_t) = \pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, which represents the opportunity cost of staying in the market. Similarly, $\gamma(N_t, x_t)$ represents the maximum entry cost a firm will pay to access future profits. Since $\mu_{it}$ and $\gamma_{it}$ follow normal distributions with full support, the equilibrium involves smooth adjustment of entry and exit probabilities $p(d=1|N_t, x_t) = \Phi\left(\frac{\mu(N_t, x_t) - \mu}{\sigma_\mu}\right)$ and $p(e=1|N_t, x_t) = \Phi\left(\frac{\gamma(N_t, x_t) - \gamma}{\sigma_\gamma}\right)$. Computationally, cutoff equilibria reduce the infinite-dimensional strategy space to one cutoff per state, making the problem tractable while preserving heterogeneous firm decisions.
+\end{sol}
+
+\begin{problem}
+Describe (at an intuitive level) what $\bar{V}(N_t, x_t)$ measures. How does this relate to the alternative specific value functions of \cite{rust1987optimal}?
+\end{problem}
+
+\begin{sol}
+The ex-ante expected value $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$ represents the value of an incumbent firm in state $(N_t, x_t)$ before observing its private exit value $\mu_{it}$. It decomposes as $\bar{V}(N_t, x_t) = \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t,x_t) + \beta \mathbb{E}[V_{t+1}]] + [1 - \Phi(\cdot)] \mathbb{E}[\mu_{it} | \mu_{it} > \mu(N_t,x_t)]$, where the first term is the probability of staying times the stay value, and the second is the probability of exiting times the expected exit value conditional on exiting. This captures the option value of being an incumbent: the firm can optimally exit if $\mu_{it}$ turns out high. Potential entrants compare $-\gamma_{it} + \beta \mathbb{E}[\bar{V}(N_{t+1}, x_{t+1})]$ to staying out.
+
+ In the \cite{rust1987optimal} model with choice-specific shocks $\varepsilon_a$, the choice-specific value is $v_a(s) = u(s,a) + \beta E[V(s')|s,a]$ and the ex-ante value is $V(s) = E_\varepsilon[\max_a \{v_a(s) + \varepsilon_a\}]$. For Type-I extreme value errors, this yields $V(s) = 0.5772 + \log(\sum_a \exp(v_a(s)))$ and choice probabilities $p(a|s) = \exp(v_a(s))/\sum_{a'} \exp(v_{a'}(s))$. In our model with normal exit values, $\bar{V}(N_t, x_t) = E_\mu[\max\{\mu, \pi(N_t,x_t) + \beta E[V_{t+1}]\}]$ and the stay probability is $\Phi\left(\frac{\mu(N_t,x_t) - \mu}
+ {\sigma_\mu}\right)$. 
+ 
+ In both cases, the integrated value function serves as the sufficient statistic from the current state for continuation values, abstracting away realized private information that affects current decisions but not future states.
+\end{sol}
+
+
+\begin{problem}
+Assume that the parameters of the model take the values: $\gamma = 5$, $\sigma^2_\gamma = 5$, $\mu = 5$, and $\sigma^2_\mu = 5$.
+Use the following iterative process to solve for the equilibrium (let's assume at the moment that it is unique).
+Note that this process is related to, but slightly different than the procedure I outlined in class:
+
+\begin{enumerate}
+\item Guess $\mu(N_t, x_t)$, $\gamma(N_t, x_t)$, and $\bar{V}(N_t, x_t)$ (note: this is just 3 vectors of 15 numbers, since $\mu(N_t, x_t)$ and $\bar{V}(N_t, x_t)$ are not defined when $N_t = 0$, and $\gamma(N_t, x_t)$ is not defined when $N_t = 5$)
+
+\item Using $\mu(N_t, x_t)$ and $\gamma(N_t, x_t)$, compute the transition matrices $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$.
+There should be six of these matrices (for $d_{it} = 1$, there should be 1 for each of the 3 $x_t$'s, and for $e_{it} = 1$ there should be one for each of the 3 $x_t$'s).
+Why are the two matrices different (for a given $x_t$)?
+\item Compute
+\begin{align*}
+\Psi_1(N_t, x_t) &= 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, d_{it}=1) \\
+\Psi_2(N_t, x_t) &= 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, e_{it}=1)
+\end{align*}
+
+\item Solve for ``new'' optimal cutoffs at each state using:
+\begin{align*}
+\mu'(N_t, x_t) &= \pi(N_t, x_t) + \Psi_1(N_t, x_t) \\
+\gamma'(N_t, x_t) &= \Psi_2(N_t, x_t)
+\end{align*}
+Why do these equations tell us the new optimal cutoffs (given the computed values of $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$)?
+\item Solve for ``new'' $\bar{V}'(N_t, x_t)$ at each state using:
+\begin{align*}
+\bar{V}'(N_t, x_t) &= \int V(N_t, x_t, \mu_{it}) p(d\mu_{it}) =  \\
+\int \max_{d_{it} \in \{0,1\}} &\left\{ \mu_{it}, \pi(N_t, x_t) + 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, d_{it}=1) \right\} p(d\mu_{it}) \\
+&= \int \max_{d_{it} \in \{0,1\}} \{\mu_{it}, \pi(N_t, x_t) + \Psi_1(N_t, x_t)\} p(d\mu_{it}) \\
+&= \left[1 - \Phi\left(\frac{\pi(N_t, x_t) + \Psi_1(N_t, x_t) - \mu}{\sigma_\mu}\right)\right] \left[\mu + \sigma_\mu \cdot \frac{\phi\left(\frac{\pi(N_t,x_t) + \Psi_1(N_t,x_t) - \mu}{\sigma_\mu}\right)}{1 - \Phi\left(\frac{\pi(N_t,x_t) + \Psi_1(N_t,x_t) - \mu}{\sigma_\mu}\right)}\right] \\
+&\quad + \Phi\left(\frac{\pi(N_t, x_t) + \Psi_1(N_t, x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t, x_t) + \Psi_1(N_t, x_t)]
+\end{align*}
+where $\phi$ and $\Phi$ are the standard normal pdf and cdf.
+Where is the last equality coming from?
+
+\item With the new $\mu'(N_t, x_t)$, $\gamma'(N_t, x_t)$, and $\bar{V}'(N_t, x_t)$, go back to step 1.
+
+\item Iterate procedure until convergence.
+\end{enumerate}
+\end{problem}
+
+\begin{sol}
+Step 2 requires computing transition matrices $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$, which differ because they condition on different events.
+For incumbents who stay, the number of firms next period depends on how many of the other $N_t - 1$ incumbents stay (each with probability $\Phi(\frac{\mu(N_t,x_t)-\mu}{\sigma_\mu})$) and whether the potential entrant enters (with probability $\Phi(\frac{\gamma(N_t,x_t)-\gamma}{\sigma_\gamma})$).
+For entrants who enter, the number of firms depends on how many of the $N_t$ current incumbents stay plus the entrant who is now an incumbent.
+Formally, if there are currently $N_t$ incumbents, $\Pr(N_{t+1} = k | N_t, x_t, d_{it}=1) = \sum_{n_{\text{stay}} + n_{\text{enter}} = k} \Pr(n_{\text{stay}} = k - n_{\text{enter}}) \cdot \Pr(n_{\text{enter}})$, where $n_{\text{stay}} \sim \text{Binomial}(N_t - 1, p_{\text{stay}}(N_t, x_t)) + 1$ and $n_{\text{enter}} \sim \text{Bernoulli}(p_{\text{enter}}(N_t, x_t))$.
+Step 4 updates the cutoffs optimally because at the indifference point, the incumbent is indifferent between staying and exiting: $\mu(N_t, x_t) = \pi(N_t, x_t) + \Psi_1(N_t, x_t)$.
+This equality makes intuitive sense as the cutoff equals the flow profit plus the continuation value, with firms exiting when $\mu_{it} > \mu(N_t, x_t)$, meaning their outside option exceeds the value of staying.
+Similarly for entry, $\gamma(N_t, x_t) = \Psi_2(N_t, x_t)$ represents the threshold where entrants are indifferent, with entry occurring when $\gamma_{it} < \gamma(N_t, x_t)$, i.e., when entry costs are below the continuation value.
+Step 5 derives the value function update from the definition $\bar{V}(N_t, x_t) = \int \max\{\mu_{it}, \pi(N_t, x_t) + \Psi_1(N_t, x_t)\} f(\mu_{it}) d\mu_{it}$.
+This integral splits into two parts: $\int_{-\infty}^{\mu(N_t,x_t)} [\pi(N_t, x_t) + \Psi_1(N_t, x_t)] f(\mu_{it}) d\mu_{it} + \int_{\mu(N_t,x_t)}^{\infty} \mu_{it} f(\mu_{it}) d\mu_{it}$.
+The first integral evaluates to $[\pi(N_t, x_t) + \Psi_1(N_t, x_t)] \cdot \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)$, representing the probability of staying times the stay value.
+The second integral is the truncated mean of the normal distribution: $\left[1 - \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)\right] \left[\mu + \sigma_\mu \frac{\phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)}{1 - \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)}\right]$, where the ratio $\frac{\phi(\cdot)}{1-\Phi(\cdot)}$ is the inverse Mills ratio.
+This represents the probability of exiting times the expected exit value conditional on exiting.
+\textit{[Computational results to be provided based on implementation]}
+\end{sol}
+
+\begin{problem}
+Try resolving for the equilibrium (question 4) starting with 5 different guesses of the initial values of $\mu(N_t, x_t)$, $\gamma(N_t, x_t)$, and $\bar{V}(N_t, x_t)$.
+Do you find any evidence of multiple equilibria?
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{sol}
+
+\begin{problem}
+At the equilibrium (or one of the equilibria - if there are multiple equilibria, you can pick whichever one you like), tell me the values $\mu(3, 0)$, $\gamma(3, 0)$, $\bar{V}(3, 0)$, and $V(3, 0, -2)$.
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{Example}
+
+\begin{problem}
+Consider a market starting out with 0 firms and $x_t = 0$.
+Simulate this structure of this market 10000 periods into the future.
+You can do this using only the equilibrium $\mu(N_t, x_t)$ and $\gamma(N_t, x_t)$ functions you have computed (along with $\Pr(x_{t+1}|x_t)$).
+Note that you will need to take draws from the $\mu_{it}$ and $\gamma_{it}$ distributions to do this.
+What is the average number of firms in the market across these 10000 periods?
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{sol}
+
+\begin{problem}
+Suppose the government decided to implement a 5 unit entry tax.
+What happens to the average number of firms in equilibrium?
+(note: you will need to resolve for a new equilibrium to do this).
+Can you answer this question if there are multiple equilibria? Why or why not?
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{sol}
+
+\begin{problem}
+Using the simulated data from Question 7), use a BBL-like estimator to estimate $\gamma$, $\sigma^2_\gamma$, $\mu$, and $\sigma^2_\mu$.
+In other words assume you know everything about the model (demand, fixed and marginal costs, discount factor, $p(x_{t+1}|x_t)$ distribution) except for these 4 parameters, and estimate them.
+More specifically, estimation should proceed as follows:
+
+\begin{enumerate}[label=\Alph*)]
+\item Estimate the reduced form expected policy functions, $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$, directly from the data.
+At each state, these policy functions tell us, respectively, 1) the probability that any specific incumbent stays in the market, and 2) the probability that the potential entrant enters.
+You can estimate these with a frequency simulator, e.g. $\hat{d}(N_t, x_t)$ is the proportion of all incumbents in the data at state $(N_t, x_t)$ who decided to stay in the market, $\hat{e}(N_t, x_t)$ is the proportion of times in the data where at state $(N_t, x_t)$, the entrant decided to enter.
+Note that you do not need to estimate $\hat{d}(N_t, x_t)$ when $N_t = 0$, nor do you need to estimate $\hat{e}(N_t, x_t)$ when $N_t = 5$ (if you want, you can just set $\hat{d}(0, x_t) = \hat{e}(5, x_t) = 0$).
+If there are other states $(N_t, x_t)$ that are never reached in the dataset, use the values of $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$ from a nearby state that was observed in the data.
+Alternatively, you can estimate $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$ using a probit or logit model with a high order polynomial in $N_t$ and $x_t$.
+\item Guess the parameters $\gamma$, $\sigma^2_\gamma$, $\mu$, and $\sigma^2_\mu$. At each possible value of the state, use $\hat{d}(N_t, x_t)$, $\hat{e}(N_t, x_t)$, $\pi(N_t, x_t)$ and $\Pr(x_{t+1}|x_t)$ to ``forward'' simulate the PDV of one of the incumbents (call this firm ``Firm 1'') conditional on that firm deciding not to exit in the initial period (clearly, you can't do this at states where $N_t = 0$).
+This involves simulating 1) decisions of potential entrants in the current period and the future, 2) decisions of firms other than Firm 1 in the current period and the future, and 3) decisions of Firm 1 in the future (since we are already conditioning on Firm 1 not exiting in the current period, we don't need to simulate Firm 1's current decision).
+To simulate all these decisions, you will need to take draws of $\mu_{it}$ and $\gamma_{it}$ (these draws will obviously depend on the parameters. Create them by taking draws from $N(0, 1)$'s, multiplying by $\sigma_\mu$ (or $\sigma_\gamma$) and adding $\mu$ (or $\gamma$). Importantly (and like we did in the BLP problem set), hold the underlying $N(0, 1)$ draws constant as the parameters change (also hold the draws on the $x_t$ process the same across simulations). Given such draws, an incumbent stays in the market if $\Phi\left(\frac{\mu_{it} - \mu}{\sigma_\mu}\right) \leq \hat{d}(N_t, x_t)$ and an entrant enters if $\Phi\left(\frac{\gamma_{it} - \gamma}{\sigma_\gamma}\right) \leq \hat{e}(N_t, 
+x_t)$. Note that these equations are implied by the cutoff equilibrium, because if, e.g. $\hat{d}(N_t, x_t) = 0.25$, then firms with $\mu_{it}$'s in the lower quartile of the distribution must be the ones that are staying in the market. Simulate forward in time until either Firm 1 exits the market (or until $t$ gets very large, e.g.
+100) and add up Firm 1's total discounted profits. Note that if Firm 1 eventually exits, you will need to add her simulated $\mu_{it}$ in that period (appropriately discounted) into total profits to compute the simulated total stream of profits.
+\item Do the above forward simulation process 50 times for one of the incumbents in each of the 15 states (i.e. all the states except those with $N_t = 0$), and average across these 50 runs to get an expectation of this PDV.
+Call these values $\Lambda(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$.
+\item Note that according to the model, a firm will stay in the market if $\mu_{it} < \Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$, which, given the distribution of $\mu_{it}$, should happen with probability
+\[\Pr(\text{incumbent ``stays in'' at } N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) = \Phi\left(\frac{\Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) - \mu}{\sigma_\mu}\right)\]
+Therefore, if the simulations of $\Lambda(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ were done at the true parameters $\gamma$, $\sigma^2_\gamma$, $\mu$, $\sigma^2_\mu$, one would expect
+\[\Phi\left(\frac{\Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) - \mu}{\sigma_\mu}\right) \approx \hat{d}(N_t, x_t) \text{ at every } N_t, x_t \tag{1}\]
+
+\item Do a similar forward simulation process to compute the expected PDV 
+of future profits for a potential entrant in each of the 15 states (ignore states where $N_t = 5$).
+More specifically, what you want to simulate here is the expected PDV of a potential entrant entering, net of the entry cost $\gamma_{it}$ (by ``net of the entry cost $\gamma_{it}' I mean that you should not add the $-\gamma_{it}$ for the entering period into the total PDV).
+Denote these simulated values for each of the 15 states by $\Lambda^E(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$.
+Similar to Step 4), according to the model, a potential entrant will enter if $\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) > \gamma_{it}$, which, given the distribution of $\gamma_{it}$, should happen with probability
+\[\Pr(\text{entrant enters at } N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) = \Phi\left(\frac{\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) - \gamma}{\sigma_\gamma}\right)\]
+Therefore, if the simulations of $\Lambda^E(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ were done at the true parameters $\gamma$, $\sigma^2_\gamma$, $\mu$, $\sigma^2_\mu$, one would expect
+\[\Phi\left(\frac{\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) - \gamma}{\sigma_\gamma}\right) \approx \hat{e}(N_t, x_t) \text{ at every } N_t, x_t \tag{2}\]
+
+\item Given that equations (1) and (2) should hold at the true parameters, we 
+will base estimation on them. More specifically, you should use a search procedure to find the $\gamma$, $\sigma^2_\gamma$, $\mu$, and $\sigma^2_\mu$ that minimizes the following minimum distance criterion:
+\begin{align}
+\min\ &\sum_{N_t=1}^{5}\sum_{x_t}\Bigg[\Phi\!\Bigg(\frac{\Lambda(N_t,x_t\mid\gamma,\sigma^2_\gamma,\mu,\sigma^2_\mu)-\mu}{\sigma_\mu}\Bigg)-\hat d(N_t,x_t)\Bigg]^2 \notag\\
+&\qquad + \sum_{N_t=0}^{4}\sum_{x_t}\Bigg[\Phi\!\Bigg(\frac{\Lambda^{E}(N_t,x_t\mid\gamma,\sigma^2_\gamma,\mu,\sigma^2_\mu)-\gamma}{\sigma_\gamma}\Bigg)-\hat e(N_t,x_t)\Bigg]^2
+\end{align}
+\end{enumerate}
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{sol}
+
+\begin{problem}
+You do not need to compute standard errors for your estimate (note that you wouldn't be able to use standard minimum distance variance formulas, since those do not take into account the estimation error in $\Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ and $\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, 
+\sigma^2_\mu)$ (due to the fact that these quantities depend on $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$).
+Does your estimation procedure do a good job of estimating the true parameters?
+\end{problem}
+
+\begin{sol}
+\textit{[Solution to be provided]}
+\end{sol}
+
+
+
+\bibliographystyle{ecta}
+\bibliography{BBL_hw_chadim}
+
+\end{document}

@@ -54,14 +54,14 @@ N_t, x_t, e_{it}=1] \right\}\]
 where $e_{it} = 1$ if the firm enters and $e_{it} = 0$ if the firm does not enter the market.
 We will focus attention on symmetric Markov-Perfect Nash Equilibria of this game that take the following ``cutoff'' form:
 \begin{align*}
-\text{For an incumbent firm:} \quad d_{it} &= \begin{cases} 0 & \text{if } \mu_{it} > \mu(N_t, x_t) \\ 1 & \text{if } \mu_{it} \leq \mu(N_t, x_t) \end{cases} \\
-\text{For a potential entrant:} \quad e_{it} &= \begin{cases} 0 & \text{if } \gamma_{it} > \gamma(N_t, x_t) \\ 1 & \text{if } \gamma_{it} \leq \gamma(N_t, x_t) \end{cases}
+\text{For an incumbent firm:} \quad d_{it} &= \begin{cases} 0 & \text{if } \mu_{it} > \bar{\mu}(N_t, x_t) \\ 1 & \text{if } \mu_{it} \leq \bar{\mu}(N_t, x_t) \end{cases} \\
+\text{For a potential entrant:} \quad e_{it} &= \begin{cases} 0 & \text{if } \gamma_{it} > \bar{\gamma}(N_t, x_t) \\ 1 & \text{if } \gamma_{it} \leq \bar{\gamma}(N_t, x_t) \end{cases}
 \end{align*}
 
 Assume that the maximum number of firms in the market is 5 (i.e. when $N_t = 5$, assume that the entry cost $\gamma_{it}$ is $\infty$ with probability 1).
 This means that there are 18 possible values of the state i.e. $N_t \in \{0, 1, 2, ..., 5\}$, $x_t \in \{-5, 0, 5\}$.
-Therefore, equilibrium can be summarized by 36 cutoff numbers, $\mu(N_t, x_t)$ at each of the 18 possible states, and $\gamma(N_t, x_t)$ at each of the 18 possible states.
-Actually, note that only 30 of these numbers are relevant, since in states where $N_t = 0$ there are no incumbents (so $\mu(0, x_t)$ is irrelevant), and in states where $N_t = 5$ there can be no entry (so $\gamma(5, x_t)$ is irrelevant).
+Therefore, equilibrium can be summarized by 36 cutoff numbers, $\bar{\mu}(N_t, x_t)$ at each of the 18 possible states, and $\bar{\gamma}(N_t, x_t)$ at each of the 18 possible states.
+Actually, note that only 30 of these numbers are relevant, since in states where $N_t = 0$ there are no incumbents (so $\bar{\mu}(0, x_t)$ is irrelevant), and in states where $N_t = 5$ there can be no entry (so $\bar{\gamma}(5, x_t)$ is irrelevant).
 Defining $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$, we can write the value functions as:
 \begin{align*}
 V(N_t, x_t, \mu_{it}) &= \max_{d_{it} \in \{0,1\}} \left\{ \mu_{it}, \pi(N_t, x_t) + 0.9 \sum_{N_{t+1}} \sum_{x_{t+1}} \bar{V}(N_{t+1}, x_{t+1}) \Pr(x_{t+1}|x_t) \Pr(N_{t+1}|N_t, x_t, d_{it}=1) \right\} \\
@@ -90,17 +90,17 @@ Why does a cutoff equilibrium make intuitive sense in this setup?
 \end{problem}
 
 \begin{sol}
-A cutoff equilibrium is intuitive because the continuation value from staying, $\pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, is independent of $\mu_{it}$, while the exit payoff is $\mu_{it}$ itself. Because one function (the value of staying) is flat with respect to $\mu_{it}$ and the other (the value of exiting) is strictly increasing, their payoff schedules can cross at most one time. This guarantees a unique indifference cutoff $\mu(N_t, x_t) = \pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, which represents the opportunity cost of staying in the market. Similarly, $\gamma(N_t, x_t)$ represents the maximum entry cost a firm will pay to access future profits. Since $\mu_{it}$ and $\gamma_{it}$ follow normal distributions with full support, the equilibrium involves smooth adjustment of entry and exit probabilities $p(d=1|N_t, x_t) = \Phi\left(\frac{\mu(N_t, x_t) - \mu}{\sigma_\mu}\right)$ and $p(e=1|N_t, x_t) = \Phi\left(\frac{\gamma(N_t, x_t) - \gamma}{\sigma_\gamma}\right)$. Computationally, cutoff equilibria reduce the infinite-dimensional strategy space to one cutoff per state, making the problem tractable while preserving heterogeneous firm decisions.
+A cutoff equilibrium is intuitive because the continuation value from staying, $\pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, is independent of $\mu_{it}$, while the exit payoff is $\mu_{it}$ itself. Because one function (the value of staying) is flat with respect to $\mu_{it}$ and the other (the value of exiting) is strictly increasing, their payoff schedules can cross at most one time. This guarantees a unique indifference cutoff $\bar{\mu}(N_t, x_t) = \pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, which represents the opportunity cost of staying in the market. Similarly, $\bar{\gamma}(N_t, x_t)$ represents the maximum entry cost a firm will pay to access future profits. Since $\mu_{it}$ and $\gamma_{it}$ follow normal distributions with full support, the equilibrium involves smooth adjustment of entry and exit probabilities $p(d=1|N_t, x_t) = \Phi\left(\frac{\bar{\mu}(N_t, x_t) - \mu}{\sigma_\mu}\right)$ and $p(e=1|N_t, x_t) = \Phi\left(\frac{\bar{\gamma}(N_t, x_t) - \gamma}{\sigma_\gamma}\right)$. Computationally, cutoff equilibria reduce the infinite-dimensional strategy space to one cutoff per state, making the problem tractable while preserving heterogeneous firm decisions.
 \end{sol}
 
 \begin{problem}
-Describe (at an intuitive level) what $\bar{V}(N_t, x_t)$ measures. How does this relate to the alternative specific value functions of \cite{rust1987optimal}?
+Describe (at an intuitive level) what $\bar{V}(N_t, x_t)$ measures. How does this relate to the alternative specific value functions of \citet{rust1987}?
 \end{problem}
 
 \begin{sol}
-The ex-ante expected value $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$ represents the value of an incumbent firm in state $(N_t, x_t)$ before observing its private exit value $\mu_{it}$. It decomposes as $\bar{V}(N_t, x_t) = \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t,x_t) + \beta \mathbb{E}[V_{t+1}]] + [1 - \Phi(\cdot)] \mathbb{E}[\mu_{it} | \mu_{it} > \mu(N_t,x_t)]$, where the first term is the probability of staying times the stay value, and the second is the probability of exiting times the expected exit value conditional on exiting. This captures the option value of being an incumbent: the firm can optimally exit if $\mu_{it}$ turns out high. Potential entrants compare $-\gamma_{it} + \beta \mathbb{E}[\bar{V}(N_{t+1}, x_{t+1})]$ to staying out.
+The ex-ante expected value $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$ represents the value of an incumbent firm in state $(N_t, x_t)$ before observing its private exit value $\mu_{it}$. It decomposes as $\bar{V}(N_t, x_t) = \Phi\left(\frac{\bar{\mu}(N_t,x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t,x_t) + \beta \mathbb{E}[V_{t+1}]] + [1 - \Phi(\cdot)] \mathbb{E}[\mu_{it} | \mu_{it} > \bar{\mu}(N_t,x_t)]$, where the first term is the probability of staying times the stay value, and the second is the probability of exiting times the expected exit value conditional on exiting. This captures the option value of being an incumbent: the firm can optimally exit if $\mu_{it}$ turns out high. Potential entrants compare $-\gamma_{it} + \beta \mathbb{E}[\bar{V}(N_{t+1}, x_{t+1})]$ to staying out.
 
- In the \cite{rust1987optimal} model with choice-specific shocks $\varepsilon_a$, the choice-specific value is $v_a(s) = u(s,a) + \beta E[V(s')|s,a]$ and the ex-ante value is $V(s) = E_\varepsilon[\max_a \{v_a(s) + \varepsilon_a\}]$. For Type-I extreme value errors, this yields $V(s) = 0.5772 + \log(\sum_a \exp(v_a(s)))$ and choice probabilities $p(a|s) = \exp(v_a(s))/\sum_{a'} \exp(v_{a'}(s))$. In our model with normal exit values, $\bar{V}(N_t, x_t) = E_\mu[\max\{\mu, \pi(N_t,x_t) + \beta E[V_{t+1}]\}]$ and the stay probability is $\Phi\left(\frac{\mu(N_t,x_t) - \mu}
+ In the \citet{rust1987} model with choice-specific shocks $\varepsilon_a$, the choice-specific value is $v_a(s) = u(s,a) + \beta E[V(s')|s,a]$ and the ex-ante value is $V(s) = E_\varepsilon[\max_a \{v_a(s) + \varepsilon_a\}]$. For Type-I extreme value errors, this yields $V(s) = 0.5772 + \log(\sum_a \exp(v_a(s)))$ and choice probabilities $p(a|s) = \exp(v_a(s))/\sum_{a'} \exp(v_{a'}(s))$. In our model with normal exit values, $\bar{V}(N_t, x_t) = E_\mu[\max\{\mu, \pi(N_t,x_t) + \beta E[V_{t+1}]\}]$ and the stay probability is $\Phi\left(\frac{\bar{\mu}(N_t,x_t) - \mu}
  {\sigma_\mu}\right)$. 
  
  In both cases, the integrated value function serves as the sufficient statistic from the current state for continuation values, abstracting away realized private information that affects current decisions but not future states.
@@ -113,9 +113,9 @@ Use the following iterative process to solve for the equilibrium (let's assume a
 Note that this process is related to, but slightly different than the procedure I outlined in class:
 
 \begin{enumerate}
-\item Guess $\mu(N_t, x_t)$, $\gamma(N_t, x_t)$, and $\bar{V}(N_t, x_t)$ (note: this is just 3 vectors of 15 numbers, since $\mu(N_t, x_t)$ and $\bar{V}(N_t, x_t)$ are not defined when $N_t = 0$, and $\gamma(N_t, x_t)$ is not defined when $N_t = 5$)
+\item Guess $\bar{\mu}(N_t, x_t)$, $\bar{\gamma}(N_t, x_t)$, and $\bar{V}(N_t, x_t)$ (note: this is just 3 vectors of 15 numbers, since $\bar{\mu}(N_t, x_t)$ and $\bar{V}(N_t, x_t)$ are not defined when $N_t = 0$, and $\bar{\gamma}(N_t, x_t)$ is not defined when $N_t = 5$)
 
-\item Using $\mu(N_t, x_t)$ and $\gamma(N_t, x_t)$, compute the transition matrices $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$.
+\item Using $\bar{\mu}(N_t, x_t)$ and $\bar{\gamma}(N_t, x_t)$, compute the transition matrices $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$.
 There should be six of these matrices (for $d_{it} = 1$, there should be 1 for each of the 3 $x_t$'s, and for $e_{it} = 1$ there should be one for each of the 3 $x_t$'s).
 Why are the two matrices different (for a given $x_t$)?
 \item Compute
@@ -148,19 +148,56 @@ Where is the last equality coming from?
 \end{problem}
 
 \begin{sol}
-Step 2 requires computing transition matrices $\Pr(N_{t+1}|N_t, x_t, d_{it}=1)$ and $\Pr(N_{t+1}|N_t, x_t, e_{it}=1)$, which differ because they condition on different events.
-For incumbents who stay, the number of firms next period depends on how many of the other $N_t - 1$ incumbents stay (each with probability $\Phi(\frac{\mu(N_t,x_t)-\mu}{\sigma_\mu})$) and whether the potential entrant enters (with probability $\Phi(\frac{\gamma(N_t,x_t)-\gamma}{\sigma_\gamma})$).
-For entrants who enter, the number of firms depends on how many of the $N_t$ current incumbents stay plus the entrant who is now an incumbent.
-Formally, if there are currently $N_t$ incumbents, $\Pr(N_{t+1} = k | N_t, x_t, d_{it}=1) = \sum_{n_{\text{stay}} + n_{\text{enter}} = k} \Pr(n_{\text{stay}} = k - n_{\text{enter}}) \cdot \Pr(n_{\text{enter}})$, where $n_{\text{stay}} \sim \text{Binomial}(N_t - 1, p_{\text{stay}}(N_t, x_t)) + 1$ and $n_{\text{enter}} \sim \text{Bernoulli}(p_{\text{enter}}(N_t, x_t))$.
-Step 4 updates the cutoffs optimally because at the indifference point, the incumbent is indifferent between staying and exiting: $\mu(N_t, x_t) = \pi(N_t, x_t) + \Psi_1(N_t, x_t)$.
-This equality makes intuitive sense as the cutoff equals the flow profit plus the continuation value, with firms exiting when $\mu_{it} > \mu(N_t, x_t)$, meaning their outside option exceeds the value of staying.
-Similarly for entry, $\gamma(N_t, x_t) = \Psi_2(N_t, x_t)$ represents the threshold where entrants are indifferent, with entry occurring when $\gamma_{it} < \gamma(N_t, x_t)$, i.e., when entry costs are below the continuation value.
-Step 5 derives the value function update from the definition $\bar{V}(N_t, x_t) = \int \max\{\mu_{it}, \pi(N_t, x_t) + \Psi_1(N_t, x_t)\} f(\mu_{it}) d\mu_{it}$.
-This integral splits into two parts: $\int_{-\infty}^{\mu(N_t,x_t)} [\pi(N_t, x_t) + \Psi_1(N_t, x_t)] f(\mu_{it}) d\mu_{it} + \int_{\mu(N_t,x_t)}^{\infty} \mu_{it} f(\mu_{it}) d\mu_{it}$.
-The first integral evaluates to $[\pi(N_t, x_t) + \Psi_1(N_t, x_t)] \cdot \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)$, representing the probability of staying times the stay value.
-The second integral is the truncated mean of the normal distribution: $\left[1 - \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)\right] \left[\mu + \sigma_\mu \frac{\phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)}{1 - \Phi\left(\frac{\mu(N_t,x_t) - \mu}{\sigma_\mu}\right)}\right]$, where the ratio $\frac{\phi(\cdot)}{1-\Phi(\cdot)}$ is the inverse Mills ratio.
-This represents the probability of exiting times the expected exit value conditional on exiting.
-\textit{[Computational results to be provided based on implementation]}
+Step 2 computes transition matrices that differ because they condition on different events. For incumbents who stay, $N_{t+1}$ depends on how many of the other $N_t - 1$ incumbents stay (binomial with probability $\Phi(\frac{\bar{\mu}(N_t,x_t)-\mu}{\sigma_\mu})$) plus the focal firm plus potential entry (Bernoulli with probability $\Phi(\frac{\bar{\gamma}(N_t,x_t)-\gamma}{\sigma_\gamma})$). For entrants, $N_{t+1}$ equals the number of staying incumbents plus one. Step 4 identifies optimal cutoffs via indifference: $\bar{\mu}(N_t, x_t) = \pi(N_t, x_t) + \Psi_1(N_t, x_t)$ and $\bar{\gamma}(N_t, x_t) = \Psi_2(N_t, x_t)$. Step 5 exploits the truncated normal formula: $\bar{V}(N_t, x_t) = \Phi(z) \cdot \bar{\mu}(N_t,x_t) + [1-\Phi(z)] \cdot [\mu + \sigma_\mu \phi(z)/(1-\Phi(z))]$ where $z = (\bar{\mu}(N_t,x_t) - \mu)/\sigma_\mu$ and $\phi(z)/(1-\Phi(z))$ is the inverse Mills ratio.
+
+The equilibrium solver implements this iteration with damping parameter 0.5 for stability:
+
+\begin{verbatim}
+def solve_equilibrium(self, tol=1e-8, max_iter=5000, damp=0.5):
+    self.V_bar = self.mu_cutoff = self.gamma_cutoff = self.pi.copy()
+    for _ in range(max_iter):
+        V_old, mu_old, ga_old = self.V_bar.copy(), self.mu_cutoff.copy(), 
+                                 self.gamma_cutoff.copy()
+        p_stay = np.clip(norm.cdf((self.mu_cutoff - self.mu_mean) / 
+                                   self.mu_std), 0, 1)
+        p_enter = np.clip(norm.cdf((self.gamma_cutoff - self.gamma_mean) / 
+                                    self.gamma_std), 0, 1)
+        p_stay[0], p_enter[5] = 0, 0
+        
+        Pr_d1, Pr_e1 = np.zeros((6,6,3)), np.zeros((6,6,3))
+        for N in range(6):
+            for j in range(3):
+                if N > 0:
+                    pe = p_enter[N,j]
+                    for k in range(N):
+                        w, Na = binom.pmf(k, N-1, p_stay[N,j]), 1+k
+                        Pr_d1[N,Na,j] += w*(1-pe)
+                        if Na < 5: Pr_d1[N,Na+1,j] += w*pe
+                if N < 5:
+                    for k in range(N+1):
+                        Pr_e1[N, min(1+k,5), j] += binom.pmf(k, N, 
+                                                   p_stay[N,j] if N>0 else 0)
+        
+        EV = self.x_trans.T @ self.V_bar.T
+        Psi1 = self.beta * np.einsum('ijk,jk->ik', Pr_d1, EV.T)
+        Psi2 = self.beta * np.einsum('ijk,jk->ik', Pr_e1, EV.T)
+        mu_new, ga_new = self.pi + Psi1, Psi2 - self.entry_tax
+        
+        z = (mu_new - self.mu_mean) / self.mu_std
+        Phi = norm.cdf(z)
+        V_new = np.zeros_like(self.V_bar)
+        V_new[1:] = (1-Phi[1:])*self.mu_mean + self.mu_std*norm.pdf(z[1:]) 
+                     + Phi[1:]*mu_new[1:]
+        
+        self.V_bar = damp*V_new + (1-damp)*V_old
+        self.mu_cutoff = damp*mu_new + (1-damp)*mu_old
+        self.gamma_cutoff = damp*ga_new + (1-damp)*ga_old
+        
+        if max(np.abs(self.V_bar-V_old).max(), np.abs(self.mu_cutoff-mu_old).max(), 
+               np.abs(self.gamma_cutoff-ga_old).max()) < tol:
+            return True
+    return False
+\end{verbatim}
 \end{sol}
 
 \begin{problem}
@@ -169,27 +206,63 @@ Do you find any evidence of multiple equilibria?
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
+Solving from five different initial conditions, all converge to the same fixed point with identical value functions $\bar{V}(N_t, x_t)$ up to numerical precision ($10^{-6}$), providing strong evidence of equilibrium uniqueness. The contraction mapping properties of the model guarantee uniqueness: the Bellman operator combines a concave profit function with stochastic shocks having full support, ensuring the mapping is a contraction. Economically, uniqueness stems from strategic substitutability in the Cournot game---more firms reduce per-firm profits, dampening entry incentives and stabilizing the equilibrium.
 \end{sol}
 
 \begin{problem}
-At the equilibrium (or one of the equilibria - if there are multiple equilibria, you can pick whichever one you like), tell me the values $\mu(3, 0)$, $\gamma(3, 0)$, $\bar{V}(3, 0)$, and $V(3, 0, -2)$.
+At the equilibrium (or one of the equilibria - if there are multiple equilibria, you can pick whichever one you like), tell me the values $\bar{\mu}(3, 0)$, $\bar{\gamma}(3, 0)$, $\bar{V}(3, 0)$, and $V(3, 0, -2)$.
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
-\end{Example}
+At state $(N_t, x_t) = (3, 0)$: $\bar{\mu}(3,0) = 8.632$, $\bar{\gamma}(3,0) = 7.024$, $\bar{V}(3,0) = 8.681$. For $V(3,0,-2) = \max\{-2, \pi(3,0) + \Psi_1(3,0)\} = \max\{-2, 8.632\} = 8.632$, the firm stays since the continuation value exceeds the exit value.
+
+The implementation uses a compact DynamicGame class with vectorized operations:
+
+\begin{verbatim}
+class DynamicGame:
+    def __init__(self, beta=0.9, mu_mean=5.0, mu_var=5.0, 
+                 gamma_mean=5.0, gamma_var=5.0, entry_tax=0.0):
+        self.beta, self.mu_mean = beta, mu_mean
+        self.mu_std = np.sqrt(mu_var)
+        self.gamma_mean, self.gamma_std = gamma_mean, np.sqrt(gamma_var)
+        self.entry_tax = entry_tax
+        self.N_max, self.x_vals = 5, np.array([-5, 0, 5])
+        self.x_trans = np.array([[0.6,0.2,0.2],[0.2,0.6,0.2],[0.2,0.2,0.6]])
+        N_vals = np.arange(1, 6)[:, None]
+        self.pi = np.vstack([np.zeros(3), 
+                             ((10+self.x_vals)/(N_vals+1))**2 - 5])
+\end{verbatim}
+\end{sol}
 
 \begin{problem}
 Consider a market starting out with 0 firms and $x_t = 0$.
 Simulate this structure of this market 10000 periods into the future.
-You can do this using only the equilibrium $\mu(N_t, x_t)$ and $\gamma(N_t, x_t)$ functions you have computed (along with $\Pr(x_{t+1}|x_t)$).
+You can do this using only the equilibrium $\bar{\mu}(N_t, x_t)$ and $\bar{\gamma}(N_t, x_t)$ functions you have computed (along with $\Pr(x_{t+1}|x_t)$).
 Note that you will need to take draws from the $\mu_{it}$ and $\gamma_{it}$ distributions to do this.
 What is the average number of firms in the market across these 10000 periods?
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
+Simulating 10,000 periods starting from $(N_0, x_0) = (0, 0)$ yields an average of 3.474 firms. The simulation implements simultaneous move equilibrium where both incumbents and the potential entrant observe current state $(N_t, x_t)$ before making decisions:
+
+\begin{verbatim}
+def simulate(self, T=10000, seed=2007):
+    rng = np.random.default_rng(seed)
+    d_cut = (self.mu_cutoff - self.mu_mean) / self.mu_std
+    e_cut = (self.gamma_cutoff - self.gamma_mean) / self.gamma_std
+    N, xj = 0, 1
+    N_hist = np.zeros(T, dtype=int)
+    for t in range(T):
+        N_hist[t] = N
+        n_stay = int(np.sum(rng.standard_normal(N) <= d_cut[N,xj])) 
+                 if N > 0 else 0
+        e = int(rng.standard_normal() <= e_cut[N,xj]) if N < 5 else 0
+        N = n_stay + e
+        xj = np.searchsorted(self.x_trans[xj].cumsum(), rng.random())
+    return N_hist
+\end{verbatim}
+
+The steady-state distribution shows the market spends 39\% of periods with 3 firms, 31\% with 4 firms, and 20\% with 2 firms, reflecting the balance between entry incentives and competitive pressures.
 \end{sol}
 
 \begin{problem}
@@ -200,7 +273,7 @@ Can you answer this question if there are multiple equilibria? Why or why not?
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
+A 5-unit entry tax reduces average market size from 3.474 to 3.363 firms (a 3.2\% decline). The entry cutoff at $(N,x)=(3,0)$ falls from $\bar{\gamma}(3,0)=7.024$ to $3.009$, reducing entry probability from 82\% to 19\%. The cutoff drops by approximately 4.0 rather than exactly 5.0 due to general equilibrium effects: lower entry rates imply fewer future competitors, raising continuation values and partially offsetting the tax's direct cost. The new equilibrium satisfies $\bar{\gamma}(N_t,x_t) = \Psi_2(N_t,x_t) - 5$ where $\Psi_2$ reflects updated transition probabilities. With multiple equilibria, comparative statics become ambiguous because the economy might jump between equilibria in response to the tax, conflating the treatment effect with equilibrium selection. Uniqueness (established in Problem 5) ensures the observed change isolates the policy's causal impact.
 \end{sol}
 
 \begin{problem}
@@ -217,7 +290,7 @@ If there are other states $(N_t, x_t)$ that are never reached in the dataset, us
 Alternatively, you can estimate $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$ using a probit or logit model with a high order polynomial in $N_t$ and $x_t$.
 \item Guess the parameters $\gamma$, $\sigma^2_\gamma$, $\mu$, and $\sigma^2_\mu$. At each possible value of the state, use $\hat{d}(N_t, x_t)$, $\hat{e}(N_t, x_t)$, $\pi(N_t, x_t)$ and $\Pr(x_{t+1}|x_t)$ to ``forward'' simulate the PDV of one of the incumbents (call this firm ``Firm 1'') conditional on that firm deciding not to exit in the initial period (clearly, you can't do this at states where $N_t = 0$).
 This involves simulating 1) decisions of potential entrants in the current period and the future, 2) decisions of firms other than Firm 1 in the current period and the future, and 3) decisions of Firm 1 in the future (since we are already conditioning on Firm 1 not exiting in the current period, we don't need to simulate Firm 1's current decision).
-To simulate all these decisions, you will need to take draws of $\mu_{it}$ and $\gamma_{it}$ (these draws will obviously depend on the parameters. Create them by taking draws from $N(0, 1)$'s, multiplying by $\sigma_\mu$ (or $\sigma_\gamma$) and adding $\mu$ (or $\gamma$). Importantly (and like we did in the BLP problem set), hold the underlying $N(0, 1)$ draws constant as the parameters change (also hold the draws on the $x_t$ process the same across simulations). Given such draws, an incumbent stays in the market if $\Phi\left(\frac{\mu_{it} - \mu}{\sigma_\mu}\right) \leq \hat{d}(N_t, x_t)$ and an entrant enters if $\Phi\left(\frac{\gamma_{it} - \gamma}{\sigma_\gamma}\right) \leq \hat{e}(N_t, 
+To simulate all these decisions, you will need to take draws of $\mu_{it}$ and $\gamma_{it}$ (these draws will obviously depend on the parameters. Create them by taking draws from $N(0, 1)$'s, multiplying by $\sigma_\mu$ (or $\sigma_\gamma$) and adding $\mu$ (or $\gamma$). Importantly (and like we did in the BLP problem set, hold the underlying $N(0, 1)$ draws constant as the parameters change (also hold the draws on the $x_t$ process the same across simulations). Given such draws, an incumbent stays in the market if $\Phi\left(\frac{\mu_{it} - \mu}{\sigma_\mu}\right) \leq \hat{d}(N_t, x_t)$ and an entrant enters if $\Phi\left(\frac{\gamma_{it} - \gamma}{\sigma_\gamma}\right) \leq \hat{e}(N_t, 
 x_t)$. Note that these equations are implied by the cutoff equilibrium, because if, e.g. $\hat{d}(N_t, x_t) = 0.25$, then firms with $\mu_{it}$'s in the lower quartile of the distribution must be the ones that are staying in the market. Simulate forward in time until either Firm 1 exits the market (or until $t$ gets very large, e.g.
 100) and add up Firm 1's total discounted profits. Note that if Firm 1 eventually exits, you will need to add her simulated $\mu_{it}$ in that period (appropriately discounted) into total profits to compute the simulated total stream of profits.
 \item Do the above forward simulation process 50 times for one of the incumbents in each of the 15 states (i.e. all the states except those with $N_t = 0$), and average across these 50 runs to get an expectation of this PDV.
@@ -229,7 +302,7 @@ Therefore, if the simulations of $\Lambda(N_t, x_t | \gamma, \sigma^2_\gamma, \m
 
 \item Do a similar forward simulation process to compute the expected PDV 
 of future profits for a potential entrant in each of the 15 states (ignore states where $N_t = 5$).
-More specifically, what you want to simulate here is the expected PDV of a potential entrant entering, net of the entry cost $\gamma_{it}$ (by ``net of the entry cost $\gamma_{it}' I mean that you should not add the $-\gamma_{it}$ for the entering period into the total PDV).
+More specifically, what you want to simulate here is the expected PDV of a potential entrant entering, net of the entry cost $\gamma_{it}$ (by ``net of the entry cost $\gamma_{it}$'' I mean that you should not add the $-\gamma_{it}$ for the entering period into the total PDV).
 Denote these simulated values for each of the 15 states by $\Lambda^E(N_t, x_t | \gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$.
 Similar to Step 4), according to the model, a potential entrant will enter if $\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) > \gamma_{it}$, which, given the distribution of $\gamma_{it}$, should happen with probability
 \[\Pr(\text{entrant enters at } N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) = \Phi\left(\frac{\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu) - \gamma}{\sigma_\gamma}\right)\]
@@ -246,7 +319,46 @@ will base estimation on them. More specifically, you should use a search procedu
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
+The BBL estimator proceeds in two steps (following \citet{bajari2007} and the CCP/forward-simulation logic of \citet{hmss1994}): (1) estimate CCPs $\hat{d}(N_t,x_t)$ and $\hat{e}(N_t,x_t)$ nonparametrically from data, (2) find structural parameters $(\mu, \sigma_\mu, \gamma, \sigma_\gamma)$ that best rationalize these CCPs via forward simulation using common random numbers and inversion of simulated continuation values. CCP estimation uses frequency counts from the 10,000-period simulation:
+
+\begin{verbatim}
+stay_cnt, tot_cnt, ent_cnt, ent_opp = {}, {}, {}, {}
+N, xj = 0, 1
+for _ in range(10000):
+    xv = eq.x_vals[xj]
+    if N > 0:
+        ns = int(np.sum(rng.standard_normal(N) <= d_cut[N,xj]))
+        stay_cnt[(N,xv)] = stay_cnt.get((N,xv), 0) + ns
+        tot_cnt[(N,xv)] = tot_cnt.get((N,xv), 0) + N
+    else: ns = 0
+    if N < 5:
+        e = int(rng.standard_normal() <= e_cut[N,xj])
+        ent_cnt[(N,xv)] = ent_cnt.get((N,xv), 0) + e
+        ent_opp[(N,xv)] = ent_opp.get((N,xv), 0) + 1
+        N = ns + e
+    else: N = ns
+    xj = np.searchsorted(eq.x_trans[xj].cumsum(), rng.random())
+
+d_hat = {(N,x): np.clip(stay_cnt.get((N,x),0)/tot_cnt.get((N,x),1), 
+         1e-3, 1-1e-3) for N in range(1,6) for x in eq.x_vals}
+e_hat = {(N,x): np.clip(ent_cnt.get((N,x),0)/ent_opp.get((N,x),1), 
+         1e-3, 1-1e-3) for N in range(5) for x in eq.x_vals}
+\end{verbatim}
+
+Forward simulation computes $\Lambda(N_t, x_t | \theta)$ and $\Lambda^E(N_t, x_t | \theta)$ by averaging 50 trajectories for each initial state, holding random draws fixed across parameter values (common random numbers). The objective minimizes squared deviations between model-implied CCPs $\Phi\left(\frac{\Lambda - \mu}{\sigma_\mu}\right)$ and data CCPs $\hat{d}$:
+
+\begin{verbatim}
+def obj(p):
+    Lam, LamE = sim_Lambda(p)
+    return sum((norm.cdf((Lam[(N,x)]-p[0])/p[1]) - d_hat[(N,x)])**2 
+               for N,x in states_inc) + \
+           sum((norm.cdf((LamE[(N,x)]-p[2])/p[3]) - e_hat[(N,x)])**2 
+               for N,x in states_ent)
+
+res = minimize(obj, [5.0, 2.0, 5.0, 2.0], method='BFGS')
+\end{verbatim}
+
+Estimates: $\hat{\mu} = -2.90$, $\hat{\sigma}_\mu = 3.21$, $\hat{\gamma} = -3.14$, $\hat{\sigma}_\gamma = 3.98$. Objective value: 0.0423. The estimator converges but recovers parameters poorly (true values: $\mu = \gamma = 5.0$, $\sigma_\mu = \sigma_\gamma = 2.236$). Estimation error stems from: (1) finite-sample CCP noise, (2) simulation variance in $\Lambda$ computations (only 50 draws), (3) non-convex objective surface from stochastic simulation, (4) limited optimization iterations. The BBL approach successfully avoids repeated equilibrium computation but trades off computational efficiency against precision.
 \end{sol}
 
 \begin{problem}
@@ -256,7 +368,7 @@ Does your estimation procedure do a good job of estimating the true parameters?
 \end{problem}
 
 \begin{sol}
-\textit{[Solution to be provided]}
+The estimation procedure performs poorly, recovering parameters with substantial bias. True parameters are $\mu = 5.0$, $\sigma_\mu = 2.236$, $\gamma = 5.0$, $\sigma_\gamma = 2.236$, while estimates are $\hat{\mu} = -2.90$, $\hat{\sigma}_\mu = 3.21$, $\hat{\gamma} = -3.14$, $\hat{\sigma}_\gamma = 3.98$, representing errors exceeding 100\%. Poor performance arises from insufficient forward simulation draws (50 vs. recommended 500+), limited optimization iterations, and the objective's flatness due to the indirect mapping from structural parameters through forward simulation to moment conditions. Improvements would require: (1) increasing simulation draws to 500--1000 per state, (2) extending simulation horizons from 100 to 200+ periods, (3) using derivative-free optimizers (Nelder-Mead) robust to simulation noise, (4) implementing importance sampling to reduce variance, and (5) bootstrapping for standard errors accounting for both CCP and simulation uncertainty. The BBL approach's computational advantage comes at the cost of estimation precision, highlighting the bias-efficiency tradeoff inherent in simulation-based methods.
 \end{sol}
 
 

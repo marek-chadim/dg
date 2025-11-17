@@ -222,11 +222,11 @@ At the equilibrium (or one of the equilibria - if there are multiple equilibria,
 
 \begin{sol}
 At the equilibrium state $(N_t,x_t)=(3,0)$, the computed values are 
-$\bar{\mu}(3,0)=8.632$, $\bar{\gamma}(3,0)=7.024$, and $\bar{V}(3,0)=8.681$. 
+$\bar{\mu}(3,0)=8.631981$, $\bar{\gamma}(3,0)=7.024259$, and $\bar{V}(3,0)=8.681050$. 
 For $V(3,0,-2)$, we have
 \[
 V(3,0,-2)=\max\{-2,\pi(3,0)+\Psi_1(3,0)\}
-=\max\{-2,8.632\}=8.632.
+=\max\{-2,8.631981\}=8.631981.
 \]
 \end{sol}
 
@@ -304,7 +304,7 @@ will base estimation on them. More specifically, you should use a search procedu
 \begin{sol}
 The BBL-like estimator proceeds in two steps, following the the CCP/forward-simulation logic of \citet{hmss1994}. 
 First, nonparametric estimates of the CCPs, $\hat{d}(N_t,x_t)$ and $\hat{e}(N_t,x_t)$, are obtained from the data. 
-Second, the structural parameters $\theta=(\mu,\sigma_\mu,\gamma,\sigma_\gamma)$ are chosen to match these CCPs by forward simulation, using common random numbers and inversion of simulated continuation values. Forward simulation computes $\Lambda(N_t,x_t\mid\theta)$ and $\Lambda^E(N_t,x_t\mid\theta)$ by averaging 50 simulated trajectories for each initial state, with identical random draws held fixed across parameter values. The estimates obtained are $\hat{\mu}=6.538$, $\hat{\sigma}_\mu=2.641$, $\hat{\gamma}=5.949$, and $\hat{\sigma}_\gamma=3.170$, with an objective value of 0.045822. 
+Second, the structural parameters $\theta=(\mu,\sigma_\mu,\gamma,\sigma_\gamma)$ are chosen to match these CCPs by forward simulation, using common random numbers and inversion of simulated continuation values. Forward simulation computes $\Lambda(N_t,x_t\mid\theta)$ and $\Lambda^E(N_t,x_t\mid\theta)$ by averaging 50 simulated trajectories for each initial state, with identical random draws held fixed across parameter values. The estimates obtained are $\hat{\mu}=4.928$, $\hat{\sigma}_\mu=2.359$, $\hat{\gamma}=5.055$, and $\hat{\sigma}_\gamma=2.185$, with an objective value of 0.002690. 
 \end{sol}
 \begin{problem}
 You do not need to compute standard errors for your estimate (note that you wouldn't be able to use standard minimum distance variance formulas, since those do not take into account the estimation error in $\Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ and $\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, 

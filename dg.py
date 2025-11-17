@@ -592,7 +592,7 @@ def main():
     # Then compute bootstrap bias, SEs, and percentile CIs on best result (parallel)
     do_bootstrap = int(os.environ.get("BBL_BOOTSTRAP", "0")) > 0
     if do_bootstrap:
-        n_boot = int(os.environ.get("BBL_N_BOOTSTRAP", "5"))
+        n_boot = int(os.environ.get("BBL_N_BOOTSTRAP", "100"))
         n_jobs = int(os.environ.get("BBL_BOOT_NJOBS", "-1"))
         T_ccp_boot = int(os.environ.get("BBL_BOOT_T_CCP", "10000"))
         boot = bootstrap_estimates_parallel(eq, res.x, n_sim=1000, horizon=1000, T_ccp=T_ccp_boot, seed=2007, n_boot=n_boot, n_jobs=n_jobs)

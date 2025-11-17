@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts,enumitem,fancyhdr,color,comment,graphicx,environ,verbatim}
+\usepackage{amsmath,amsthm,amssymb,amsfonts,enumitem,fancyhdr,color,comment,graphicx,environ,verbatim,listings}
 \usepackage{natbib}
 \usepackage{hyperref,url}
 \pagestyle{fancy}
@@ -90,7 +90,29 @@ Why does a cutoff equilibrium make intuitive sense in this setup?
 \end{problem}
 
 \begin{sol}
-A cutoff equilibrium is intuitive because the continuation value from staying, $\pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, is independent of $\mu_{it}$, while the exit payoff is $\mu_{it}$ itself. Because one function (the value of staying) is flat with respect to $\mu_{it}$ and the other (the value of exiting) is strictly increasing, their payoff schedules can cross at most one time. This guarantees a unique indifference cutoff $\bar{\mu}(N_t, x_t) = \pi(N_t, x_t) + \beta \mathbb{E}[V(N_{t+1}, x_{t+1})|N_t, x_t, d=1]$, which represents the opportunity cost of staying in the market. Similarly, $\bar{\gamma}(N_t, x_t)$ represents the maximum entry cost a firm will pay to access future profits. Since $\mu_{it}$ and $\gamma_{it}$ follow normal distributions with full support, the equilibrium involves smooth adjustment of entry and exit probabilities $p(d=1|N_t, x_t) = \Phi\left(\frac{\bar{\mu}(N_t, x_t) - \mu}{\sigma_\mu}\right)$ and $p(e=1|N_t, x_t) = \Phi\left(\frac{\bar{\gamma}(N_t, x_t) - \gamma}{\sigma_\gamma}\right)$. Computationally, cutoff equilibria reduce the infinite-dimensional strategy space to one cutoff per state, making the problem tractable while preserving heterogeneous firm decisions.
+A cutoff equilibrium is intuitive because the continuation value from staying,
+\[
+\pi(N_t, x_t) + \beta\,\mathbb{E}\big[V(N_{t+1}, x_{t+1}) \mid N_t, x_t, d=1\big],
+\]
+is independent of the idiosyncratic draw $\mu_{it}$, while the exit payoff equals $\mu_{it}$ itself. 
+Because one function (the value of staying) is flat in $\mu_{it}$ and the other (the value of exiting) 
+is strictly increasing in $\mu_{it}$, their payoff schedules can cross at most once. This guarantees the 
+unique indifference cutoff
+\[
+\bar{\mu}(N_t, x_t) \;=\; \pi(N_t, x_t) + \beta\,\mathbb{E}\big[V(N_{t+1}, x_{t+1}) \mid N_t, x_t, d=1\big],
+\]
+which represents the opportunity cost of remaining in the market. Similarly, $\bar{\gamma}(N_t, x_t)$ 
+denotes the maximum entry cost a prospective entrant will pay to access future profits.
+
+Since $\mu_{it}$ and $\gamma_{it}$ are normally distributed with full support, the equilibrium involves smooth 
+adjustment of entry and exit probabilities,
+\[
+p(d=1\mid N_t, x_t) = \Phi\!\left(\frac{\bar{\mu}(N_t, x_t) - \mu}{\sigma_\mu}\right),
+\qquad
+p(e=1\mid N_t, x_t) = \Phi\!\left(\frac{\bar{\gamma}(N_t, x_t) - \gamma}{\sigma_\gamma}\right).
+\]
+Computationally, cutoff equilibria reduce the infinite-dimensional strategy space to one cutoff per state, making 
+the problem tractable while still allowing heterogeneous firm decisions.
 \end{sol}
 
 \begin{problem}
@@ -98,12 +120,29 @@ Describe (at an intuitive level) what $\bar{V}(N_t, x_t)$ measures. How does thi
 \end{problem}
 
 \begin{sol}
-The ex-ante expected value $\bar{V}(N_t, x_t) = \int V(N_t, x_t, \mu_{it}) p(d\mu_{it})$ represents the value of an incumbent firm in state $(N_t, x_t)$ before observing its private exit value $\mu_{it}$. It decomposes as $\bar{V}(N_t, x_t) = \Phi\left(\frac{\bar{\mu}(N_t,x_t) - \mu}{\sigma_\mu}\right) [\pi(N_t,x_t) + \beta \mathbb{E}[V_{t+1}]] + [1 - \Phi(\cdot)] \mathbb{E}[\mu_{it} | \mu_{it} > \bar{\mu}(N_t,x_t)]$, where the first term is the probability of staying times the stay value, and the second is the probability of exiting times the expected exit value conditional on exiting. This captures the option value of being an incumbent: the firm can optimally exit if $\mu_{it}$ turns out high. Potential entrants compare $-\gamma_{it} + \beta \mathbb{E}[\bar{V}(N_{t+1}, x_{t+1})]$ to staying out.
+The quantity $\bar{V}(N_t,x_t)=\int V(N_t,x_t,\mu_{it})\,p(d\mu_{it})$ is the incumbent's expected
+continuation value before observing its idiosyncratic exit shock. Because the stay payoff 
+$\pi(N_t,x_t)+\beta\,\mathbb{E}[V_{t+1}]$ is constant in $\mu_{it}$ while the exit payoff equals $\mu_{it}$, we obtain
+\[
+\bar{V}(N_t,x_t)
+=\Phi(z)\,[\pi(N_t,x_t)+\beta\,\mathbb{E}[V_{t+1}]]
++[1-\Phi(z)]\,\mathbb{E}[\mu_{it}\mid \mu_{it}>\bar{\mu}(N_t,x_t)],
+\quad 
+z=\frac{\bar{\mu}(N_t,x_t)-\mu}{\sigma_\mu}.
+\]
+This captures the option value of staying: the firm retains the right to exit when $\mu_{it}$ is high.
 
- In the \citet{rust1987} model with choice-specific shocks $\varepsilon_a$, the choice-specific value is $v_a(s) = u(s,a) + \beta E[V(s')|s,a]$ and the ex-ante value is $V(s) = E_\varepsilon[\max_a \{v_a(s) + \varepsilon_a\}]$. For Type-I extreme value errors, this yields $V(s) = 0.5772 + \log(\sum_a \exp(v_a(s)))$ and choice probabilities $p(a|s) = \exp(v_a(s))/\sum_{a'} \exp(v_{a'}(s))$. In our model with normal exit values, $\bar{V}(N_t, x_t) = E_\mu[\max\{\mu, \pi(N_t,x_t) + \beta E[V_{t+1}]\}]$ and the stay probability is $\Phi\left(\frac{\bar{\mu}(N_t,x_t) - \mu}
- {\sigma_\mu}\right)$. 
- 
- In both cases, the integrated value function serves as the sufficient statistic from the current state for continuation values, abstracting away realized private information that affects current decisions but not future states.
+In \citet{rust1987}, the choice-specific value is $v_a(s)=u(s,a)+\beta\,\mathbb{E}[V(s')\mid s,a]$ and the ex-ante value is 
+$V(s)=\mathbb{E}_\varepsilon[\max_a\{v_a(s)+\varepsilon_a\}]$. With Type-I extreme value errors, 
+$V(s)=0.5772+\log\!\left(\sum_a e^{v_a(s)}\right)$ and $p(a\mid s)=e^{v_a(s)}/\sum_{a'} e^{v_{a'}(s)}$.
+
+In the exit model with normally distributed shocks,
+\[
+\bar{V}(N_t,x_t)=\mathbb{E}\!\left[\max\{\mu_{it},\,\pi(N_t,x_t)+\beta\,\mathbb{E}[V_{t+1}]\}\right],
+\qquad
+p(d=1\mid N_t,x_t)=\Phi(z).
+\]
+In both settings, the integrated value function (either $\bar{V}$ or $V$) summarizes continuation values after integrating out private shocks.
 \end{sol}
 
 
@@ -148,56 +187,22 @@ Where is the last equality coming from?
 \end{problem}
 
 \begin{sol}
-Step 2 computes transition matrices that differ because they condition on different events. For incumbents who stay, $N_{t+1}$ depends on how many of the other $N_t - 1$ incumbents stay (binomial with probability $\Phi(\frac{\bar{\mu}(N_t,x_t)-\mu}{\sigma_\mu})$) plus the focal firm plus potential entry (Bernoulli with probability $\Phi(\frac{\bar{\gamma}(N_t,x_t)-\gamma}{\sigma_\gamma})$). For entrants, $N_{t+1}$ equals the number of staying incumbents plus one. Step 4 identifies optimal cutoffs via indifference: $\bar{\mu}(N_t, x_t) = \pi(N_t, x_t) + \Psi_1(N_t, x_t)$ and $\bar{\gamma}(N_t, x_t) = \Psi_2(N_t, x_t)$. Step 5 exploits the truncated normal formula: $\bar{V}(N_t, x_t) = \Phi(z) \cdot \bar{\mu}(N_t,x_t) + [1-\Phi(z)] \cdot [\mu + \sigma_\mu \phi(z)/(1-\Phi(z))]$ where $z = (\bar{\mu}(N_t,x_t) - \mu)/\sigma_\mu$ and $\phi(z)/(1-\Phi(z))$ is the inverse Mills ratio.
+Step 2 computes transition matrices that differ because they condition on distinct events. 
+For incumbents who stay, $N_{t+1}$ depends on how many of the other $N_t - 1$ incumbents stay 
+(a binomial with probability $\Phi((\bar{\mu}(N_t, x_t)-\mu)/\sigma_\mu)$), plus the focal firm, 
+and potential entry (a Bernoulli with probability $\Phi((\bar{\gamma}(N_t, x_t)-\gamma)/\sigma_\gamma)$). 
+For entrants, $N_{t+1}$ equals the number of staying incumbents plus one. Step 4 identifies optimal cutoffs via indifference: 
+$\bar{\mu}(N_t, x_t) = \pi(N_t, x_t) + \Psi_1(N_t, x_t)$ and 
+$\bar{\gamma}(N_t, x_t) = \Psi_2(N_t, x_t)$. Step 5 exploits the truncated-normal formula:
+\[
+\bar{V}(N_t, x_t) 
+= \Phi(z)\,\bar{\mu}(N_t, x_t) 
++ [1 - \Phi(z)]\,\left[\mu + \sigma_\mu \frac{\phi(z)}{1 - \Phi(z)}\right],
+\]
+where $z = (\bar{\mu}(N_t,x_t) - \mu)/\sigma_\mu$, and where $\phi(z)/(1-\Phi(z))$ 
+denotes the inverse Mills ratio.
 
-The equilibrium solver implements this iteration with damping parameter 0.5 for stability:
 
-\begin{verbatim}
-def solve_equilibrium(self, tol=1e-8, max_iter=5000, damp=0.5):
-    self.V_bar = self.mu_cutoff = self.gamma_cutoff = self.pi.copy()
-    for _ in range(max_iter):
-        V_old, mu_old, ga_old = self.V_bar.copy(), self.mu_cutoff.copy(), 
-                                 self.gamma_cutoff.copy()
-        p_stay = np.clip(norm.cdf((self.mu_cutoff - self.mu_mean) / 
-                                   self.mu_std), 0, 1)
-        p_enter = np.clip(norm.cdf((self.gamma_cutoff - self.gamma_mean) / 
-                                    self.gamma_std), 0, 1)
-        p_stay[0], p_enter[5] = 0, 0
-        
-        Pr_d1, Pr_e1 = np.zeros((6,6,3)), np.zeros((6,6,3))
-        for N in range(6):
-            for j in range(3):
-                if N > 0:
-                    pe = p_enter[N,j]
-                    for k in range(N):
-                        w, Na = binom.pmf(k, N-1, p_stay[N,j]), 1+k
-                        Pr_d1[N,Na,j] += w*(1-pe)
-                        if Na < 5: Pr_d1[N,Na+1,j] += w*pe
-                if N < 5:
-                    for k in range(N+1):
-                        Pr_e1[N, min(1+k,5), j] += binom.pmf(k, N, 
-                                                   p_stay[N,j] if N>0 else 0)
-        
-        EV = self.x_trans.T @ self.V_bar.T
-        Psi1 = self.beta * np.einsum('ijk,jk->ik', Pr_d1, EV.T)
-        Psi2 = self.beta * np.einsum('ijk,jk->ik', Pr_e1, EV.T)
-        mu_new, ga_new = self.pi + Psi1, Psi2 - self.entry_tax
-        
-        z = (mu_new - self.mu_mean) / self.mu_std
-        Phi = norm.cdf(z)
-        V_new = np.zeros_like(self.V_bar)
-        V_new[1:] = (1-Phi[1:])*self.mu_mean + self.mu_std*norm.pdf(z[1:]) 
-                     + Phi[1:]*mu_new[1:]
-        
-        self.V_bar = damp*V_new + (1-damp)*V_old
-        self.mu_cutoff = damp*mu_new + (1-damp)*mu_old
-        self.gamma_cutoff = damp*ga_new + (1-damp)*ga_old
-        
-        if max(np.abs(self.V_bar-V_old).max(), np.abs(self.mu_cutoff-mu_old).max(), 
-               np.abs(self.gamma_cutoff-ga_old).max()) < tol:
-            return True
-    return False
-\end{verbatim}
 \end{sol}
 
 \begin{problem}
@@ -206,32 +211,23 @@ Do you find any evidence of multiple equilibria?
 \end{problem}
 
 \begin{sol}
-Solving from five different initial conditions, all converge to the same fixed point with identical value functions $\bar{V}(N_t, x_t)$ up to numerical precision ($10^{-6}$), providing strong evidence of equilibrium uniqueness. The contraction mapping properties of the model guarantee uniqueness: the Bellman operator combines a concave profit function with stochastic shocks having full support, ensuring the mapping is a contraction. Economically, uniqueness stems from strategic substitutability in the Cournot game---more firms reduce per-firm profits, dampening entry incentives and stabilizing the equilibrium.
+Solving from five distinct initial conditions, all trajectories converge to the same equilibrium, 
+thereby providing no evidence of multiple equilibria.
 \end{sol}
+
 
 \begin{problem}
 At the equilibrium (or one of the equilibria - if there are multiple equilibria, you can pick whichever one you like), tell me the values $\bar{\mu}(3, 0)$, $\bar{\gamma}(3, 0)$, $\bar{V}(3, 0)$, and $V(3, 0, -2)$.
 \end{problem}
 
 \begin{sol}
-At state $(N_t, x_t) = (3, 0)$: $\bar{\mu}(3,0) = 8.632$, $\bar{\gamma}(3,0) = 7.024$, $\bar{V}(3,0) = 8.681$. For $V(3,0,-2) = \max\{-2, \pi(3,0) + \Psi_1(3,0)\} = \max\{-2, 8.632\} = 8.632$, the firm stays since the continuation value exceeds the exit value.
-
-The implementation uses a compact DynamicGame class with vectorized operations:
-
-\begin{verbatim}
-class DynamicGame:
-    def __init__(self, beta=0.9, mu_mean=5.0, mu_var=5.0, 
-                 gamma_mean=5.0, gamma_var=5.0, entry_tax=0.0):
-        self.beta, self.mu_mean = beta, mu_mean
-        self.mu_std = np.sqrt(mu_var)
-        self.gamma_mean, self.gamma_std = gamma_mean, np.sqrt(gamma_var)
-        self.entry_tax = entry_tax
-        self.N_max, self.x_vals = 5, np.array([-5, 0, 5])
-        self.x_trans = np.array([[0.6,0.2,0.2],[0.2,0.6,0.2],[0.2,0.2,0.6]])
-        N_vals = np.arange(1, 6)[:, None]
-        self.pi = np.vstack([np.zeros(3), 
-                             ((10+self.x_vals)/(N_vals+1))**2 - 5])
-\end{verbatim}
+At the equilibrium state $(N_t,x_t)=(3,0)$, the computed values are 
+$\bar{\mu}(3,0)=8.632$, $\bar{\gamma}(3,0)=7.024$, and $\bar{V}(3,0)=8.681$. 
+For $V(3,0,-2)$, we have
+\[
+V(3,0,-2)=\max\{-2,\pi(3,0)+\Psi_1(3,0)\}
+=\max\{-2,8.632\}=8.632.
+\]
 \end{sol}
 
 \begin{problem}
@@ -243,26 +239,8 @@ What is the average number of firms in the market across these 10000 periods?
 \end{problem}
 
 \begin{sol}
-Simulating 10,000 periods starting from $(N_0, x_0) = (0, 0)$ yields an average of 3.474 firms. The simulation implements simultaneous move equilibrium where both incumbents and the potential entrant observe current state $(N_t, x_t)$ before making decisions:
-
-\begin{verbatim}
-def simulate(self, T=10000, seed=2007):
-    rng = np.random.default_rng(seed)
-    d_cut = (self.mu_cutoff - self.mu_mean) / self.mu_std
-    e_cut = (self.gamma_cutoff - self.gamma_mean) / self.gamma_std
-    N, xj = 0, 1
-    N_hist = np.zeros(T, dtype=int)
-    for t in range(T):
-        N_hist[t] = N
-        n_stay = int(np.sum(rng.standard_normal(N) <= d_cut[N,xj])) 
-                 if N > 0 else 0
-        e = int(rng.standard_normal() <= e_cut[N,xj]) if N < 5 else 0
-        N = n_stay + e
-        xj = np.searchsorted(self.x_trans[xj].cumsum(), rng.random())
-    return N_hist
-\end{verbatim}
-
-The steady-state distribution shows the market spends 39\% of periods with 3 firms, 31\% with 4 firms, and 20\% with 2 firms, reflecting the balance between entry incentives and competitive pressures.
+Simulating 10{,}000 periods from $(N_0,x_0)=(0,0)$ using the equilibrium cutoff rules 
+yields an average market size of 3.474 firms.
 \end{sol}
 
 \begin{problem}
@@ -273,7 +251,12 @@ Can you answer this question if there are multiple equilibria? Why or why not?
 \end{problem}
 
 \begin{sol}
-A 5-unit entry tax reduces average market size from 3.474 to 3.363 firms (a 3.2\% decline). The entry cutoff at $(N,x)=(3,0)$ falls from $\bar{\gamma}(3,0)=7.024$ to $3.009$, reducing entry probability from 82\% to 19\%. The cutoff drops by approximately 4.0 rather than exactly 5.0 due to general equilibrium effects: lower entry rates imply fewer future competitors, raising continuation values and partially offsetting the tax's direct cost. The new equilibrium satisfies $\bar{\gamma}(N_t,x_t) = \Psi_2(N_t,x_t) - 5$ where $\Psi_2$ reflects updated transition probabilities. With multiple equilibria, comparative statics become ambiguous because the economy might jump between equilibria in response to the tax, conflating the treatment effect with equilibrium selection. Uniqueness (established in Problem 5) ensures the observed change isolates the policy's causal impact.
+Introducing a 5-unit entry tax reduces average market size from 3.474 to 3.3625 firms 
+(a 3.21\% decline). At $(N,x)=(3,0)$, the entry cutoff falls from 
+$\bar{\gamma}(3,0)=7.024$ to $3.009$, lowering the entry probability from 82\% to 19\%.
+
+If multiple equilibria were present, the policy effect would not be well-defined: the tax 
+could shift the economy across equilibria, making comparative statics ambiguous.
 \end{sol}
 
 \begin{problem}
@@ -319,48 +302,10 @@ will base estimation on them. More specifically, you should use a search procedu
 \end{problem}
 
 \begin{sol}
-The BBL estimator proceeds in two steps (following \citet{bajari2007} and the CCP/forward-simulation logic of \citet{hmss1994}): (1) estimate CCPs $\hat{d}(N_t,x_t)$ and $\hat{e}(N_t,x_t)$ nonparametrically from data, (2) find structural parameters $(\mu, \sigma_\mu, \gamma, \sigma_\gamma)$ that best rationalize these CCPs via forward simulation using common random numbers and inversion of simulated continuation values. CCP estimation uses frequency counts from the 10,000-period simulation:
-
-\begin{verbatim}
-stay_cnt, tot_cnt, ent_cnt, ent_opp = {}, {}, {}, {}
-N, xj = 0, 1
-for _ in range(10000):
-    xv = eq.x_vals[xj]
-    if N > 0:
-        ns = int(np.sum(rng.standard_normal(N) <= d_cut[N,xj]))
-        stay_cnt[(N,xv)] = stay_cnt.get((N,xv), 0) + ns
-        tot_cnt[(N,xv)] = tot_cnt.get((N,xv), 0) + N
-    else: ns = 0
-    if N < 5:
-        e = int(rng.standard_normal() <= e_cut[N,xj])
-        ent_cnt[(N,xv)] = ent_cnt.get((N,xv), 0) + e
-        ent_opp[(N,xv)] = ent_opp.get((N,xv), 0) + 1
-        N = ns + e
-    else: N = ns
-    xj = np.searchsorted(eq.x_trans[xj].cumsum(), rng.random())
-
-d_hat = {(N,x): np.clip(stay_cnt.get((N,x),0)/tot_cnt.get((N,x),1), 
-         1e-3, 1-1e-3) for N in range(1,6) for x in eq.x_vals}
-e_hat = {(N,x): np.clip(ent_cnt.get((N,x),0)/ent_opp.get((N,x),1), 
-         1e-3, 1-1e-3) for N in range(5) for x in eq.x_vals}
-\end{verbatim}
-
-Forward simulation computes $\Lambda(N_t, x_t | \theta)$ and $\Lambda^E(N_t, x_t | \theta)$ by averaging 50 trajectories for each initial state, holding random draws fixed across parameter values (common random numbers). The objective minimizes squared deviations between model-implied CCPs $\Phi\left(\frac{\Lambda - \mu}{\sigma_\mu}\right)$ and data CCPs $\hat{d}$:
-
-\begin{verbatim}
-def obj(p):
-    Lam, LamE = sim_Lambda(p)
-    return sum((norm.cdf((Lam[(N,x)]-p[0])/p[1]) - d_hat[(N,x)])**2 
-               for N,x in states_inc) + \
-           sum((norm.cdf((LamE[(N,x)]-p[2])/p[3]) - e_hat[(N,x)])**2 
-               for N,x in states_ent)
-
-res = minimize(obj, [5.0, 2.0, 5.0, 2.0], method='BFGS')
-\end{verbatim}
-
-Estimates: $\hat{\mu} = -2.90$, $\hat{\sigma}_\mu = 3.21$, $\hat{\gamma} = -3.14$, $\hat{\sigma}_\gamma = 3.98$. Objective value: 0.0423. The estimator converges but recovers parameters poorly (true values: $\mu = \gamma = 5.0$, $\sigma_\mu = \sigma_\gamma = 2.236$). Estimation error stems from: (1) finite-sample CCP noise, (2) simulation variance in $\Lambda$ computations (only 50 draws), (3) non-convex objective surface from stochastic simulation, (4) limited optimization iterations. The BBL approach successfully avoids repeated equilibrium computation but trades off computational efficiency against precision.
+The BBL-like estimator proceeds in two steps, following the the CCP/forward-simulation logic of \citet{hmss1994}. 
+First, nonparametric estimates of the CCPs, $\hat{d}(N_t,x_t)$ and $\hat{e}(N_t,x_t)$, are obtained from the data. 
+Second, the structural parameters $\theta=(\mu,\sigma_\mu,\gamma,\sigma_\gamma)$ are chosen to match these CCPs by forward simulation, using common random numbers and inversion of simulated continuation values. Forward simulation computes $\Lambda(N_t,x_t\mid\theta)$ and $\Lambda^E(N_t,x_t\mid\theta)$ by averaging 50 simulated trajectories for each initial state, with identical random draws held fixed across parameter values. The estimates obtained are $\hat{\mu}=6.538$, $\hat{\sigma}_\mu=2.641$, $\hat{\gamma}=5.949$, and $\hat{\sigma}_\gamma=3.170$, with an objective value of 0.045822. 
 \end{sol}
-
 \begin{problem}
 You do not need to compute standard errors for your estimate (note that you wouldn't be able to use standard minimum distance variance formulas, since those do not take into account the estimation error in $\Lambda(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, \sigma^2_\mu)$ and $\Lambda^E(N_t, x_t|\gamma, \sigma^2_\gamma, \mu, 
 \sigma^2_\mu)$ (due to the fact that these quantities depend on $\hat{d}(N_t, x_t)$ and $\hat{e}(N_t, x_t)$).
@@ -368,12 +313,558 @@ Does your estimation procedure do a good job of estimating the true parameters?
 \end{problem}
 
 \begin{sol}
-The estimation procedure performs poorly, recovering parameters with substantial bias. True parameters are $\mu = 5.0$, $\sigma_\mu = 2.236$, $\gamma = 5.0$, $\sigma_\gamma = 2.236$, while estimates are $\hat{\mu} = -2.90$, $\hat{\sigma}_\mu = 3.21$, $\hat{\gamma} = -3.14$, $\hat{\sigma}_\gamma = 3.98$, representing errors exceeding 100\%. Poor performance arises from insufficient forward simulation draws (50 vs. recommended 500+), limited optimization iterations, and the objective's flatness due to the indirect mapping from structural parameters through forward simulation to moment conditions. Improvements would require: (1) increasing simulation draws to 500--1000 per state, (2) extending simulation horizons from 100 to 200+ periods, (3) using derivative-free optimizers (Nelder-Mead) robust to simulation noise, (4) implementing importance sampling to reduce variance, and (5) bootstrapping for standard errors accounting for both CCP and simulation uncertainty. The BBL approach's computational advantage comes at the cost of estimation precision, highlighting the bias-efficiency tradeoff inherent in simulation-based methods.
+With 50 simulations per state, the recovered parameters deviate somewhat from the true values ($\mu=5.0$, $\sigma_\mu\approx 2.236$, $\gamma=5.0$, $\sigma_\gamma\approx 2.236$). Using 1000 simulations reduces bias: $\hat{\mu} = 4.928$, $\hat{\sigma}_\mu = 2.359$, $\hat{\gamma} = 5.055$, $\hat{\sigma}_\gamma = 2.185$, with 100 repetition bootstrap, the 95\% percentile confidence intervals cover the true parameters: $$
+\mu \in [4.360, 5.850], \quad \sigma_\mu \in [1.973, 2.706], \quad \gamma \in [4.069, 5.947], \quad \sigma_\gamma \in [1.709, 3.018].
+$$
 \end{sol}
 
 
 
+
+
+\section*{Code and Output}
+
+\begin{verbatim}
+import os
+import numpy as np
+from scipy.stats import norm, binom
+from scipy.optimize import minimize
+from joblib import Parallel, delayed
+
+class DynamicGame:
+    def __init__(self, beta=0.9, mu_mean=5.0, mu_var=5.0, gamma_mean=5.0, 
+                 gamma_var=5.0, entry_tax=0.0):
+        self.beta = beta
+        self.mu_mean, self.mu_std = mu_mean, np.sqrt(mu_var)
+        self.gamma_mean, self.gamma_std = gamma_mean, np.sqrt(gamma_var)
+        self.entry_tax = entry_tax
+        self.N_max, self.x_vals = 5, np.array([-5, 0, 5])
+        self.x_trans = np.array([[0.6, 0.2, 0.2], [0.2, 0.6, 0.2], 
+                                 [0.2, 0.2, 0.6]])
+        N_vals = np.arange(1, 6)[:, None]
+        self.pi = np.vstack([np.zeros(3), 
+                             ((10 + self.x_vals) / (N_vals + 1))**2 - 5])
+        self.mu_cutoff = self.gamma_cutoff = self.V_bar = np.zeros_like(self.pi)
+
+    def solve_equilibrium(self, tol=1e-8, max_iter=5000, damp=0.5):
+        self.V_bar = self.mu_cutoff = self.gamma_cutoff = self.pi.copy()
+        for _ in range(max_iter):
+            V_old, mu_old, ga_old = self.V_bar.copy(), self.mu_cutoff.copy(), \
+                self.gamma_cutoff.copy()
+            p_stay = np.clip(norm.cdf((self.mu_cutoff - self.mu_mean) / 
+                                      self.mu_std), 0, 1)
+            p_enter = np.clip(norm.cdf((self.gamma_cutoff - self.gamma_mean) / 
+                                       self.gamma_std), 0, 1)
+            p_stay[0], p_enter[5] = 0, 0
+            
+            Pr_d1, Pr_e1 = np.zeros((6, 6, 3)), np.zeros((6, 6, 3))
+            for N in range(6):
+                for j in range(3):
+                    if N > 0:
+                        pe = p_enter[N,j]
+                        for k in range(N):
+                            w, Na = binom.pmf(k, N-1, p_stay[N,j]), 1+k
+                            Pr_d1[N,Na,j] += w*(1-pe)
+                            if Na < 5: Pr_d1[N,Na+1,j] += w*pe
+                    if N < 5:
+                        for k in range(N+1):
+                            Pr_e1[N, min(1+k,5), j] += binom.pmf(k, N, 
+                                            p_stay[N,j] if N>0 else 0)
+            
+            EV = self.x_trans.T @ self.V_bar.T
+            Psi1 = self.beta * np.einsum('ijk,jk->ik', Pr_d1, EV.T)
+            Psi2 = self.beta * np.einsum('ijk,jk->ik', Pr_e1, EV.T)
+            mu_new, ga_new = self.pi + Psi1, Psi2 - self.entry_tax
+            
+            z = (mu_new - self.mu_mean) / self.mu_std
+            V_new = np.zeros_like(self.V_bar)
+            V_new[1:] = ((1-norm.cdf(z[1:]))*self.mu_mean + 
+                         self.mu_std*norm.pdf(z[1:]) + norm.cdf(z[1:])*mu_new[1:])
+            
+            self.V_bar = damp*V_new + (1-damp)*V_old
+            self.mu_cutoff = damp*mu_new + (1-damp)*mu_old
+            self.gamma_cutoff = damp*ga_new + (1-damp)*ga_old
+            
+            if (max(np.abs(self.V_bar-V_old).max(), 
+                    np.abs(self.mu_cutoff-mu_old).max(), 
+                    np.abs(self.gamma_cutoff-ga_old).max()) < tol):
+                return True
+        return False
+
+    def simulate(self, T=10000, seed=2007):
+        rng = np.random.default_rng(seed)
+        d_cut = (self.mu_cutoff - self.mu_mean) / self.mu_std
+        e_cut = (self.gamma_cutoff - self.gamma_mean) / self.gamma_std
+        N, xj = 0, 1
+        N_hist = np.zeros(T, dtype=int)
+        for t in range(T):
+            N_hist[t] = N
+            n_stay = (int(np.sum(rng.standard_normal(N) <= d_cut[N,xj])) 
+                      if N > 0 else 0)
+            e = int(rng.standard_normal() <= e_cut[N,xj]) if N < 5 else 0
+            N = n_stay + e
+            xj = np.searchsorted(self.x_trans[xj].cumsum(), rng.random())
+        return N_hist
+
+def estimate_ccps(eq, T=10000, seed=2007):
+    rng = np.random.default_rng(seed)
+    d_cut = (eq.mu_cutoff - eq.mu_mean) / eq.mu_std
+    e_cut = (eq.gamma_cutoff - eq.gamma_mean) / eq.gamma_std
+    stay_cnt, tot_cnt, ent_cnt, ent_opp = {}, {}, {}, {}
+    N, xj = 0, 1
+    for _ in range(T):
+        xv = eq.x_vals[xj]
+        if N > 0:
+            ns = int(np.sum(rng.standard_normal(N) <= d_cut[N,xj]))
+            stay_cnt[(N,xv)] = stay_cnt.get((N,xv), 0) + ns
+            tot_cnt[(N,xv)] = tot_cnt.get((N,xv), 0) + N
+        else:
+            ns = 0
+        if N < 5:
+            e = int(rng.standard_normal() <= e_cut[N,xj])
+            ent_cnt[(N,xv)] = ent_cnt.get((N,xv), 0) + e
+            ent_opp[(N,xv)] = ent_opp.get((N,xv), 0) + 1
+            N = ns + e
+        else:
+            N = ns
+        xj = np.searchsorted(eq.x_trans[xj].cumsum(), rng.random())
+    d_hat = {(N,x): np.clip(stay_cnt.get((N,x),0)/tot_cnt.get((N,x),1), 
+                            1e-3, 1-1e-3) if (N,x) in tot_cnt else 0.5 
+             for N in range(1,6) for x in eq.x_vals}
+    e_hat = {(N,x): np.clip(ent_cnt.get((N,x),0)/ent_opp.get((N,x),1), 
+                            1e-3, 1-1e-3) if (N,x) in ent_opp else 0.5 
+             for N in range(5) for x in eq.x_vals}
+    return d_hat, e_hat
+
+def _generate_common_draws(n_states_inc, n_states_ent, n_sim, horizon, seed):
+    rng = np.random.default_rng(seed)
+    half = max(1, n_sim // 2)
+
+    def antithetic_norm(shape):
+        z = rng.standard_normal((shape[0], half) + shape[2:])
+        za, out = -z, np.concatenate([z, za], axis=1)
+        if out.shape[1] < n_sim:
+            out = np.concatenate([out, rng.standard_normal((shape[0], 1) + 
+                                                           shape[2:])], axis=1)
+        return out
+
+    def antithetic_unif(shape):
+        u = rng.random((shape[0], half) + shape[2:])
+        ua, out = 1.0 - u, np.concatenate([u, ua], axis=1)
+        if out.shape[1] < n_sim:
+            out = np.concatenate([out, rng.random((shape[0], 1) + 
+                                                  shape[2:])], axis=1)
+        return out
+
+    mu_other = antithetic_norm((n_states_inc, n_sim, horizon, 5))
+    mu_firm1 = antithetic_norm((n_states_inc, n_sim, horizon))
+    gamma_entry = antithetic_norm((n_states_inc, n_sim, horizon))
+    demand_u_inc = antithetic_unif((n_states_inc, n_sim, horizon))
+    mu_inc_initial = antithetic_norm((n_states_ent, n_sim, 5))
+    mu_firmE = antithetic_norm((n_states_ent, n_sim, horizon))
+    mu_otherE = antithetic_norm((n_states_ent, n_sim, horizon, 5))
+    gamma_entryE = antithetic_norm((n_states_ent, n_sim, horizon))
+    demand_u_ent = antithetic_unif((n_states_ent, n_sim, horizon))
+
+    return (mu_other, mu_firm1, gamma_entry, demand_u_inc, mu_inc_initial, 
+            mu_firmE, mu_otherE, gamma_entryE, demand_u_ent)
+
+def bbl_estimate(d_hat, e_hat, eq, n_sim=50, horizon=100, seed=2007, 
+                 bootstrap=False, n_bootstrap=100, start_from=None):
+    states_inc = [(N, j) for N in range(1, 6) for j in range(3)]
+    states_ent = [(N, j) for N in range(0, 5) for j in range(3)]
+    d_arr = np.full((6, 3), 0.5)
+    e_arr = np.full((6, 3), 0.5)
+    for N in range(1, 6):
+        for j, xv in enumerate(eq.x_vals):
+            if (N, xv) in d_hat: d_arr[N, j] = d_hat[(N, xv)]
+    for N in range(0, 5):
+        for j, xv in enumerate(eq.x_vals):
+            if (N, xv) in e_hat: e_arr[N, j] = e_hat[(N, xv)]
+    d_arr, e_arr = np.clip(d_arr, 1e-6, 1 - 1e-6), np.clip(e_arr, 1e-6, 1 - 1e-6)
+    d_thr, e_thr = norm.ppf(d_arr), norm.ppf(e_arr)
+    x_cum_full = eq.x_trans.cumsum(axis=1)
+    VERBOSE = int(os.environ.get("BBL_VERBOSE", "0"))
+    N_STARTS = max(1, int(os.environ.get("BBL_N_STARTS", "3")))
+
+def make_simulator(hor, ns, sd):
+        beta_pows = eq.beta ** np.arange(hor + 1)
+        draws = _generate_common_draws(len(states_inc), len(states_ent), 
+                                       ns, hor, sd)
+        (mu_other, mu_firm1, gamma_entry, demand_u_inc, mu_inc_initial,  
+         mu_firmE, mu_otherE, gamma_entryE, demand_u_ent) = draws
+        ns_eff = mu_other.shape[1]
+
+        def next_x_idx(x_idx_vec, u_vec):
+            c = x_cum_full[x_idx_vec]
+            return np.sum(u_vec[:, None] > c, axis=1)
+
+        def simulate_Lambda(theta):
+            mu_m, sig_mu, ga_m, sig_g = theta
+            Lam, LamE = {}, {}
+
+            def sim_inc_state(si, N0, xi0):
+                N = np.full(ns_eff, N0, dtype=int)
+                x = np.full(ns_eff, xi0, dtype=int)
+                alive, pdv = np.ones(ns_eff, dtype=bool), np.zeros(ns_eff)
+                pdv += eq.pi[N0, xi0]
+                stay_other = np.zeros(ns_eff, dtype=int)
+                ent0 = np.zeros(ns_eff, dtype=int)
+                if N0 > 1:
+                    z_vec0 = mu_other[si, :, 0, :N0 - 1]
+                    stay_other = np.sum(z_vec0 <= d_thr[N0, xi0], 
+                                        axis=1)
+                if N0 < 5:
+                    ent0 = (gamma_entry[si, :, 0] <= e_thr[N0, xi0])\
+                        .astype(int)
+                N = np.minimum(1 + stay_other + ent0, 5)
+                x = next_x_idx(x, demand_u_inc[si, :, 0])
+                for t in range(1, hor):
+                    if not alive.any(): break
+                    idx, zf = np.where(alive)[0], \
+                        mu_firm1[si, np.where(alive)[0], t]
+                    thr = d_thr[N[idx], x[idx]]
+                    stay_f1, exiting = zf <= thr, idx[~stay_f1]
+                    if exiting.size > 0:
+                        pdv[exiting] += beta_pows[t] * \
+                            (mu_m + sig_mu * mu_firm1[si, exiting, t])
+                        alive[exiting] = False
+                    surv = idx[stay_f1]
+                    if surv.size > 0:
+                        pdv[surv] += beta_pows[t] * eq.pi[N[surv], x[surv]]
+                        stay_o = np.zeros(surv.size, dtype=int)
+                        ent = np.zeros(surv.size, dtype=int)
+                        has_others = N[surv] > 1
+                        if np.any(has_others):
+                            sv_idx = np.where(has_others)[0]
+                            z_o = mu_other[si, surv[sv_idx], t, :]
+                            thr_o = d_thr[N[surv[sv_idx]], x[surv[sv_idx]]]\
+                                [:, None]
+                            mask = np.arange(5) < (N[surv[sv_idx]] - 1)\
+                                [:, None]
+                            stay_o_vals = (z_o <= thr_o) & mask
+                            stay_o[sv_idx] = stay_o_vals.sum(axis=1)
+                        Nn = stay_o + 1
+                        can_ent = N[surv] < 5
+                        if np.any(can_ent):
+                            ce_idx = np.where(can_ent)[0]
+                            ent[ce_idx] = (gamma_entry[si, surv[ce_idx], t] <= \
+                                           e_thr[N[surv[ce_idx]], x[surv[ce_idx]]])\
+                                .astype(int)
+                        N[surv] = np.minimum(Nn + ent, 5)
+                        x[surv] = next_x_idx(x[surv], \
+                                             demand_u_inc[si, surv, t])
+                return (N0, eq.x_vals[xi0]), float(pdv.mean())
+
+            def sim_ent_state(si, N0, xi0):
+                stay_inc = np.zeros(ns_eff, dtype=int)
+                if N0 > 0:
+                    stay_inc = np.sum(mu_inc_initial[si, :, :N0] <= 
+                                      d_thr[N0, xi0], axis=1)
+                N = np.minimum(stay_inc + 1, 5)
+                x = next_x_idx(np.full(ns_eff, xi0, dtype=int), 
+                               demand_u_ent[si, :, 0])
+                alive, pdv = np.ones(ns_eff, dtype=bool), np.zeros(ns_eff)
+                for t in range(1, hor):
+                    if not alive.any(): break
+                    idx, zE = np.where(alive)[0], \
+                        mu_firmE[si, np.where(alive)[0], t]
+                    thr = d_thr[N[idx], x[idx]]
+                    stay_E, exiting = zE <= thr, idx[~stay_E]
+                    if exiting.size > 0:
+                        pdv[exiting] += beta_pows[t] * \
+                            (mu_m + sig_mu * mu_firmE[si, exiting, t])
+                        alive[exiting] = False
+                    surv = idx[stay_E]
+                    if surv.size > 0:
+                        pdv[surv] += beta_pows[t] * eq.pi[N[surv], x[surv]]
+                        stay_o = np.zeros(surv.size, dtype=int)
+                        ent = np.zeros(surv.size, dtype=int)
+                        has_others = N[surv] > 1
+                        if np.any(has_others):
+                            sv_idx = np.where(has_others)[0]
+                            zOE = mu_otherE[si, surv[sv_idx], t, :]
+                            thr_o = d_thr[N[surv[sv_idx]], x[surv[sv_idx]]]\
+                                [:, None]
+                            mask = np.arange(5) < (N[surv[sv_idx]] - 1)\
+                                [:, None]
+                            stay_o_vals = (zOE <= thr_o) & mask
+                            stay_o[sv_idx] = stay_o_vals.sum(axis=1)
+                        Nn = stay_o + 1
+                        can_ent = N[surv] < 5
+                        if np.any(can_ent):
+                            ce_idx = np.where(can_ent)[0]
+                            ent[ce_idx] = (gamma_entryE[si, surv[ce_idx], t] <= \
+                                           e_thr[N[surv[ce_idx]], x[surv[ce_idx]]])\
+                                .astype(int)
+                        N[surv] = np.minimum(Nn + ent, 5)
+                        x[surv] = next_x_idx(x[surv], \
+                                             demand_u_ent[si, surv, t])
+                return (N0, eq.x_vals[xi0]), float(pdv.mean())
+            n_jobs = int(os.environ.get("BBL_NJOBS", "1"))
+            if Parallel is not None and n_jobs != 1:
+                inc_results = Parallel(n_jobs=n_jobs, prefer="threads")(
+                    delayed(sim_inc_state)(si, N0, xi0) 
+                    for si, (N0, xi0) in enumerate(states_inc))
+                ent_results = Parallel(n_jobs=n_jobs, prefer="threads")(
+                    delayed(sim_ent_state)(si, N0, xi0) 
+                    for si, (N0, xi0) in enumerate(states_ent))
+            else:
+                inc_results = [sim_inc_state(si, N0, xi0) 
+                               for si, (N0, xi0) in enumerate(states_inc)]
+                ent_results = [sim_ent_state(si, N0, xi0) 
+                               for si, (N0, xi0) in enumerate(states_ent)]
+            for k, v in inc_results: Lam[k] = v
+            for k, v in ent_results: LamE[k] = v
+            return Lam, LamE
+
+        def objective(theta):
+            Lam, LamE = simulate_Lambda(theta)
+            inc_err, ent_err = 0.0, 0.0
+            for N, j in states_inc:
+                inc_err += (norm.cdf((Lam[(N, eq.x_vals[j])] - theta[0]) / 
+                                     theta[1]) - d_arr[N, j]) ** 2
+            for N, j in states_ent:
+                ent_err += (norm.cdf((LamE[(N, eq.x_vals[j])] - theta[2]) / 
+                                     theta[3]) - e_arr[N, j]) ** 2
+            return inc_err + ent_err
+
+        return simulate_Lambda, objective
+
+    sim_full, obj_full = make_simulator(horizon, n_sim, seed)
+
+    if start_from is not None:
+        starts = [np.array(start_from, dtype=float)]
+    else:
+        starts, rng = [], np.random.default_rng(
+            int(os.environ.get("BBL_SEED", "12345")))
+        for _ in range(N_STARTS):
+            starts.append(np.array([rng.uniform(0, 8), rng.uniform(1.2, 3.5), 
+                                    rng.uniform(0, 8), rng.uniform(1.2, 3.5)]))
+
+    best_res, all_results = None, []
+    for i, x0 in enumerate(starts):
+        res = minimize(obj_full, x0=x0, method='BFGS')
+        all_results.append((i, x0, res))
+        if best_res is None or res.fun < best_res.fun: best_res = res
+    best_res.all_starts, best_res.se = all_results, None
+    try:
+        def cdf_inc(val, N, j): return norm.cdf((val - best_res.x[0]) / best_res.x[1])
+        def cdf_ent(val, N, j): return norm.cdf((val - best_res.x[2]) / best_res.x[3])
+        simulate_Lambda, _ = make_simulator(horizon, n_sim, seed)
+        Lam, LamE = simulate_Lambda(best_res.x)
+        inc_sq, ent_sq, inc_abs, ent_abs = [], [], [], []
+        for N, j in states_inc:
+            pred, err = cdf_inc(Lam[(N, eq.x_vals[j])], N, j) - d_arr[N, j]
+            inc_sq.append(err*err), inc_abs.append(abs(err))
+        for N, j in states_ent:
+            pred, err = cdf_ent(LamE[(N, eq.x_vals[j])], N, j) - e_arr[N, j]
+            ent_sq.append(err*err), ent_abs.append(abs(err))
+        inc_sum, ent_sum = float(np.sum(inc_sq)), float(np.sum(ent_sq))
+        best_res.obj_breakdown = {
+            "inc_sum": inc_sum, "ent_sum": ent_sum, "total": inc_sum + ent_sum,
+            "inc_mse": inc_sum / len(states_inc), "ent_mse": ent_sum / len(states_ent),
+            "inc_max_abs": float(np.max(inc_abs)) if inc_abs else 0.0,
+            "ent_max_abs": float(np.max(ent_abs)) if ent_abs else 0.0,
+            "n_sim": n_sim, "horizon": horizon,}
+    except Exception:
+        best_res.obj_breakdown = None
+    return best_res
+
+def _bootstrap_rep(b, eq, theta_hat, n_sim, horizon, T_ccp, seed):
+    try:
+        boot_seed = seed + 10000 * (b + 1)
+        d_hat_boot, e_hat_boot = estimate_ccps(eq, T=T_ccp, 
+                                               seed=boot_seed)
+        old_verbose, old_nstarts, old_njobs = (
+            os.environ.get("BBL_VERBOSE", "0"),
+            os.environ.get("BBL_N_STARTS", "1"), 
+            os.environ.get("BBL_NJOBS", "1")
+        )
+        os.environ["BBL_VERBOSE"], os.environ["BBL_N_STARTS"], \
+            os.environ["BBL_NJOBS"] = "0", "1", "1"
+        res = bbl_estimate(d_hat_boot, e_hat_boot, eq, 
+                           n_sim=n_sim, horizon=horizon, 
+                           seed=boot_seed, bootstrap=False, 
+                           n_bootstrap=0, start_from=theta_hat)
+        os.environ["BBL_VERBOSE"], os.environ["BBL_N_STARTS"], \
+            os.environ["BBL_NJOBS"] = old_verbose, old_nstarts, \
+            old_njobs
+        return res.x if res is not None and hasattr(res, 'x') \
+            else np.array([np.nan]*4)
+    except Exception:
+        return np.array([np.nan]*4)
+
+def bootstrap_estimates_parallel(eq, theta_hat, n_sim=300, 
+                                horizon=300, T_ccp=10000, 
+                                seed=2007, n_boot=100, n_jobs=-1):
+    if Parallel is None:
+        estimates = [_bootstrap_rep(b, eq, theta_hat, n_sim, 
+                                    horizon, T_ccp, seed) 
+                     for b in range(n_boot)]
+    else:
+        print(f"Running {n_boot} BBL bootstraps in parallel "
+              f"(n_jobs={n_jobs})...")
+        batch_estimates = Parallel(n_jobs=n_jobs, 
+                                   backend="threading", verbose=1)(
+            delayed(_bootstrap_rep)(b, eq, theta_hat, n_sim, 
+                                    horizon, T_ccp, seed)
+            for b in range(n_boot))
+        estimates = batch_estimates
+        print(f"  Completed {n_boot} bootstrap replications")
+
+    estimates = np.array(estimates)
+    valid = ~np.isnan(estimates).any(axis=1)
+    return estimates[valid] if valid.sum() >= 5 else None
+
+def main():
+    print("Dynamic Entry/Exit Game: Equilibrium and Estimation")
+    inits = [("profits", None), ("0", np.zeros((6,3))), 
+             ("1", np.ones((6,3))),
+             ("U[0,10]", np.random.RandomState(123)\
+              .uniform(0,10,(6,3))),
+             ("U[-5,15]", np.random.RandomState(456)\
+              .uniform(-5,15,(6,3)))]
+    sols = []
+    for name, init_val in inits:
+        game = DynamicGame()
+        if init_val is not None:
+            game.V_bar = game.mu_cutoff = \
+                game.gamma_cutoff = init_val.copy()
+        game.solve_equilibrium()
+        sols.append(game)
+        print(f"Init {name}: V_bar(3,0)={game.V_bar[3,1]:.4f}, "
+              f"mu_bar(3,0)={game.mu_cutoff[3,1]:.4f}")
+    
+    eq = sols[0]
+    print(f"Equilibrium at (N,x)=(3,0): mu_bar={eq.mu_cutoff[3,1]:.6f}, "
+          f"gamma_bar={eq.gamma_cutoff[3,1]:.6f}, V_bar={eq.V_bar[3,1]:.6f}")
+    
+    N_hist = eq.simulate()
+    print(f"Average firms: {N_hist.mean():.4f}")
+    
+    tax = DynamicGame(entry_tax=5.0)
+    tax.solve_equilibrium()
+    N_tax = tax.simulate()
+    print(f"With 5-unit tax: {N_tax.mean():.4f} firms "
+          f"(Change: {N_tax.mean() - N_hist.mean():.4f})")
+    
+    T_ccp = int(os.environ.get("BBL_T_CCP", "10000"))
+    d_hat, e_hat = estimate_ccps(eq, T=T_ccp, seed=2007)
+    print(f"Estimated {len(d_hat)} CCPs and {len(e_hat)} ECPs "
+          f"from {T_ccp} data periods")
+    
+    n_sim_ps, horizon_ps = 50, 1000
+    res_ps = bbl_estimate(d_hat, e_hat, eq, n_sim=n_sim_ps, 
+                          horizon=horizon_ps, seed=2007)
+    if hasattr(res_ps, 'all_starts'):
+        for i, x0, r in res_ps.all_starts:
+            print(f"Start {i}: obj={r.fun:.6f}, mu={r.x[0]:.3f}, "
+                  f"sigma_mu={r.x[1]:.3f}, gamma={r.x[2]:.3f}, "
+                  f"sigma_gamma={r.x[3]:.3f}")
+    
+    n_sim_hp, horizon_hp = (int(os.environ.get("BBL_N_SIM", "1000")), 
+                           int(os.environ.get("BBL_H", "1000")))
+    res_hp = bbl_estimate(d_hat, e_hat, eq, n_sim=n_sim_hp, 
+                          horizon=horizon_hp, seed=2007)
+    if hasattr(res_hp, 'all_starts'):
+        for i, x0, r in res_hp.all_starts:
+            print(f"Start {i}: obj={r.fun:.6f}, mu={r.x[0]:.3f}, "
+                  f"sigma_mu={r.x[1]:.3f}, gamma={r.x[2]:.3f}, "
+                  f"sigma_gamma={r.x[3]:.3f}")
+
+    res = res_hp
+    do_bootstrap = int(os.environ.get("BBL_BOOTSTRAP", "0")) > 0
+    if do_bootstrap:
+        n_boot, n_jobs, T_ccp_boot = \
+            (int(os.environ.get("BBL_N_BOOTSTRAP", "100")),
+            int(os.environ.get("BBL_BOOT_NJOBS", "-1")), 
+            int(os.environ.get("BBL_BOOT_T_CCP", "10000")))
+        boot = bootstrap_estimates_parallel(eq, res.x, n_sim=1000, 
+                                            horizon=1000, 
+                                            T_ccp=T_ccp_boot, 
+                                            seed=2007, 
+                                            n_boot=n_boot, 
+                                            n_jobs=n_jobs)
+        if boot is not None and boot.shape[0] >= 5:
+            se, ci_lo, ci_hi = (boot.std(axis=0, ddof=1), 
+                                np.percentile(boot, 2.5, axis=0), 
+                                np.percentile(boot, 97.5, axis=0))
+            print(f"Bootstrap SE: mu={se[0]:.3f}, sigma_mu={se[1]:.3f}, "
+                  f"gamma={se[2]:.3f}, sigma_gamma={se[3]:.3f}")
+            print(f"95% CI: mu=[{ci_lo[0]:.3f}, {ci_hi[0]:.3f}], "
+                  f"sigma_mu=[{ci_lo[1]:.3f}, {ci_hi[1]:.3f}], "
+                  f"gamma=[{ci_lo[2]:.3f}, {ci_hi[2]:.3f}], "
+                  f"sigma_gamma=[{ci_lo[3]:.3f}, {ci_hi[3]:.3f}]")
+
+if __name__ == "__main__":
+    main()
+
+[Running] python -u ".../dg.py"
+Q4-5: Equilibrium Computation
+  Init profits  : V_bar(3,0)=8.6810, mu_bar(3,0)=8.6320
+  Init 0        : V_bar(3,0)=8.6810, mu_bar(3,0)=8.6320
+  Init 1        : V_bar(3,0)=8.6810, mu_bar(3,0)=8.6320
+  Init U[0,10]  : V_bar(3,0)=8.6810, mu_bar(3,0)=8.6320
+  Init U[-5,15] : V_bar(3,0)=8.6810, mu_bar(3,0)=8.6320
+  Result: UNIQUE
+
+Q6: Equilibrium at (N,x)=(3,0)
+  mu_bar(3,0) = 8.631981
+  gamma_bar(3,0) = 7.024259
+  V_bar(3,0) = 8.681050
+  V(3,0,-2) = 8.631981 (firm stays)
+
+Q7: Market Simulation (10,000 periods)
+  Average firms: 3.4740
+
+Q8: Entry Tax Counterfactual
+  With 5-unit tax: 3.3625 firms
+  Change: -0.1115 firms (-3.21%)
+
+Q9: BBL-like Estimation (forward simulation of Lambda, Lambda^E)
+  Step 1: Nonparametric CCP estimation from simulated data
+    Simulating 10000 periods from equilibrium...
+    Estimated 15 incumbent CCPs and 15 entry CCPs from data
+    Sample CCP comparison (estimated vs true):
+      d(N=3,x=0): est=0.9497, true=0.9478
+      d(N=3,x=-5): est=0.5147, true=0.5157
+      d(N=3,x=5): est=0.9990, true=1.0000
+      e(N=3,x=0): est=0.8206, true=0.8173
+      e(N=3,x=-5): est=0.9990, true=0.9980
+      e(N=3,x=5): est=0.9290, true=0.9261
+  Step 2: Forward simulation (Lambda, Lambda^E) 
+          and minimum distance search
+  Using 50 simulations, horizon=1000
+    Start rng-1   : obj=0.051855, mu= 6.059, sigma_mu=2.799, 
+                    gamma= 5.040, sigma_gamma=3.440, iters=26
+    Start rng-2   : obj=0.051855, mu= 6.059, sigma_mu=2.799, 
+                    gamma= 5.040, sigma_gamma=3.440, iters=23
+    Start rng-3   : obj=0.051855, mu= 6.059, sigma_mu=2.799, 
+                    gamma= 5.040, sigma_gamma=3.440, iters=30
+    Settings: n_sim=50, horizon=1000
+    Objective breakdown: total=0.051855, inc_sum=0.041749, 
+                         ent_sum=0.010106
+  Using 1000 simulations, horizon=1000
+    Start rng-1   : obj=0.002690, mu= 4.928, sigma_mu=2.359, 
+                    gamma= 5.055, sigma_gamma=2.185, iters=28
+    Start rng-2   : obj=0.002690, mu= 4.928, sigma_mu=2.359, 
+                    gamma= 5.055, sigma_gamma=2.185, iters=26
+    Start rng-3   : obj=0.002690, mu= 4.928, sigma_mu=2.359, 
+                    gamma= 5.054, sigma_gamma=2.186, iters=26
+    Settings: n_sim=1000, horizon=1000
+    Objective breakdown: total=0.002690, inc_sum=0.002342, 
+                         ent_sum=0.000348
+Running 100 BBL bootstraps in parallel (n_jobs=-1)...
+  Bootstrap SE: mu= 0.390, sigma_mu=0.193, 
+                gamma= 0.481, sigma_gamma=0.320
+  Percentile 95% CI: mu=[ 4.360, 5.850], 
+                     sigma_mu=[1.973, 2.706], 
+                     gamma=[ 4.069, 5.947], 
+                     sigma_gamma=[1.709, 3.018]
+\end{verbatim}
 \bibliographystyle{ecta}
 \bibliography{BBL_hw_chadim}
+
 
 \end{document}

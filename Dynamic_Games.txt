@@ -1,557 +1,0 @@
-ECON 600: Industrial Organization
-Charles Hodgson
-
-Dynamic Games
-
-From Single Agent Problems to Games
-
-I So far we have studied single agent dynamic problems.
-I Trading o payos today with payos in the future.
-I E.g. dynamic demand.
-
-I The approaches we have studied can be extended to the
-analysis of dynamic games.
-I Dynamic incentives + strategic interaction.
-
-I Best reference is Aguirregabiria, Collard-Wexler, and Ryan
-(2021) in Handbook of IO
-
-From Single Agent Problems to Games
-I Examples:
-I Entry and exit games.
-I Allow for simultaneous entry and exit.
-I Can distinguish sunk costs and xed costs.
-I Rationalizes evolution of market structure.
-I Contrast to static entry literature (Bresnahan and Reiss
-(1991), Berry (1992), Seim (2006) etc.
-
-I Investment in capacity/quality etc.
-I Learning by doing.
-I Firm pricing in response to consumer dynamics (e.g. durable
-goods).
-
-Framework: A Simple Dynamic Game
-I Let's think about a dynamic entry/exit and investment game.
-I In the spirit of Pakes and McGuire (1994) and Ericson and
-Pakes (1995).
-
-I Suppose we have a market with rms i ∈ {1, ..., N}.
-I Firm i 's state given by sit ∈ S .
-I Let's call is a quality level.
-I E.g. could be S = {1, 2, ..., 10}.
-
-I s−it indicates the vector of everyone else's quality.
-I st = (sit , s−it ) is the industry state: vector of all qualities in
-the market.
-
-I Assumption of exchangability/symmetry (all rivals look
-alike).
-
-Framework: A Simple Dynamic Game
-I At date t , ow payo is given by
-π(sit , s−it ; θ)
-I This is a reduced form prot function of some underlying
-static game.
-
-I For instance, we could have a static demand and supply model
-in which demand (and marginal costs) depends on sit .
-I Firms set prices in static equilibrium.
-I This generates some prot, π(sit , s−it ; θ).
-I E.g. we could estimate BLP conditional on st and then
-generate the payo mapping.
-
-I Or do something simpler e.g. log-linear demand for a
-homogeneous good.
-
-Framework: A Simple Dynamic Game
-I In each period t , incumbent rms make two choices:
-1. Whether to stay in the market:
-
-dit ∈ {0, 1}
-I If exit, get π(sit , s−it ) this period. Get some scrap value φ
-next period that the exit forever (V = 0).
-2. If dit = 1, choose whether to invest in quality:
-
-ait ∈ {0, 1}
-I Evolution of quality: sit+1 ∼ F (sit+1 |sit , ait ; θ).
-I This transition function should allow for depreciation.
-I e.g. falling behind industry-level trend.
-I This ensures the stationary distribution of s (recurrent class of
-states) is not degenerate.
-
-Framework: A Simple Dynamic Game
-
-I Dynamic Problem:
-V (sit , s−it ; θ) = Eait ,φit [max{π(sit , s−it ; θπ ) + β(φ + φit ),
-max {π(sit , s−it ; θπ ) − cait + ait + βE [V (sit+1 , s−it+1 ; θ)|st , ait ; θ]}]
-
-ait ∈{0,1}
-
-I c is the investment cost.
-I Allowing random shocks φit and it = (0it , 1it ).
-I iid over t and i .
-I Private information.
-
-Framework: A Simple Dynamic Game
-I Expectation over tomorrow's value function:
-E [V (sit+1 , s−it+1 ; θ)|st , ait ; θ] =
-Z Z
-V (sit+1 , s−it+1 ; θ)f (sit+1 |sit , ait ; θ)dsit+1 g (s−it+1 |st )
-I i 's state sit+1 evolves according to f (sit+1 |sit , ait ; θ)
-I Known (up to θ)
-
-I From i 's perspective, other rms states evolve according to
-g (s−it+1 |st ).
-I Can't condition on a−it (investments made simultaneously)
-and shocks (φ−it , −it ) private info.
-
-I g (s−it+1 |st ) includes distribution of other rms' actions
-conditional on today's industry state.
-
-I Plus stochastic evolution of other rms' states conditional on
-those actions.
-
-I This is the new part!
-
-Framework: A Simple Dynamic Game
-I Let's add an entry decision.
-I Suppose at each t there is one potential entrant.
-I Entrant's problem e(st ) ∈ {0, 1}:
-V
-
-ent
-
-
-(st ) = Eent
-max
-t
-
-0,
-
-
-
-−κ + ent
-t + βE [V (s̄, s−it+1 ; θ)|st ]
-
-I Pay κ to enter or stay out forever.
-I Enter with quality s̄
-I Without this feature, the number of rms in the market would
-go to 0 at T → ∞.
-I Why?
-
-Markov Perfect Equilibrium
-
-I Policy functions:
-d(sit , s−it , φit , it ; θ) ∈ {0, 1}
-a(sit , s−it φit , it ; θ) ∈ {0, 1}
-e(st , ent
-t ; θ) ∈ {0, 1}
-I Integrate out unobservable state variables (shocks) to get
-CCPs (e.g. logit shocks).
-
-I Solve for policy functions in Markov Perfect Equilibrium.
-
-Markov Perfect Equilibrium
-I Idea of MPE (Maskin and Triole, 1988):
-I Restrict strategies to only depend on payo-relevant state
-variables.
-
-I e.g. we won't allow d(st , st−1 , st−2 , ..., φit , it ; θ)
-
-I In single agent model, Markov policy functions followed from
-Markov state transitions.
-
-I Never optimal to condition on past states.
-
-I In a dynamic game, there are equilibira with policy functions
-that condition on past states.
-
-I Even if state transitions are 1st order Markov.
-I E.g. collusive punishment equilibria.
-I Rules out Folk Theorem (anything is possible).
-
-Markov Perfect Equilibrium
-
-I Denition: in Markov Perfect Equilibrium:
-1.
-
-d(sit , s−it , φit , it ; θ), a(sit , s−it φit , it ; θ), e(st , ent
-t ; θ) solve
-the dynamic problem conditional on beliefs about the evolution
-of other rms states, g (s−it+1 |st ).
-
-2.
-
-g (s−it+1 |st ) is generated by d(·), a(·), and e(·) for rms −i .
-I i.e. Symmetry: all rms have the same optimal policy function
-(although they may be at dierent states).
-
-I Rational expectations: Beliefs about other rms' state
-transitions are generated by optimal policy functions.
-
-Solving the Model
-
-I As with Rust (1987), if we can solve for the policy functions,
-we can write down a likelihood of the observed data.
-
-I We are now solving for equilibrium.
-I Policies must be dynamically optimal given beliefs.
-I Beliefs must be correct given policy functions.
-
-I Best response iteration.
-I Similar to Rust (1987) value function iteration, but embeds
-consistency of beliefs g (s−it+1 |st ).
-
-Solving the Model
-1. Guess the value functions, V
-
-0 (s
-
-it+1 , s−it+1 ), V
-
-ent 0
-
-(st ) and beliefs
-
-g (s−it+1 |st ).
-2. Iterate Bellman equation holding g (s−it+1 |st ) xed until
-V (sit+1 , s−it+1 ), V ent (st ) converge (Rust).
-3. Converged functions imply policies
-
-d(sit , s−it , φit , it ; θ), a(sit , s−it φit , it ; θ), e(st , ent
-t ; θ).
-4. Policies + distribution of the private states/shocks imply new
-beliefs g (s−it+1 |st ):
-
-I For example if ent
-∼ N(0, 1):
-t
-e(st ; θ) = P(−κ + ent
-t + βE [V (s̄, s−it+1 ; θ) > 0)
-= Φ(βE [V (s̄, s−it+1 ; θ) − κ)
-I = the probability a new rm enters tomorrow, conditional on
-today's state.
-
-5. Repeat from 2 with new g (s−it+1 |st ) until convergence.
-
-Solving the Model: Issues
-I Unlike in the case of single agent dynamics, iteration is not
-guaranteed to converge!
-
-I Holding g (s−it+1 |st ) xed, problem is just single agent.
-I Evolution of other rms states as-if exogenous.
-I This part is a contraction mapping.
-I In general, no guarantee of existence of equilibrium between V
-and g .
-I Existence proofs for specic cases (including the one presented
-here) (Ericson and Pakes, 1999; Gowrisankaran, 1999).
-
-I Key is the iid shocks , which generate smooth beliefs over
-other rms actions.
-
-I This algorithm can only nd pure strategy equilibria.
-
-Solving the Model: Issues
-I Usually, the algorithm does converge
-I More common problem is multiplicity!
-I E.g. from Besanko et al. (2010) homotophy algorithm:
-
-I Typical practice: try several initial V and g and check if you get the
-same equilibrium...
-
-Solving the Model: Issues
-
-I Computational curse of dimensionality.
-I size of the state space grows exponentially with the number of
-rms N .
-(s1t , s2t , ..., sNt )
-I In discrete cases (like above) with symmetry/exchangability,
-can write the state space as :
-
-P
-P
-I s˜t1 = n snt = 1, s˜t2 = n snt = 2, etc.
-
-I i.e. keep track of counts of rms at each state.
-
-Solving the Model: Issues
-I Other approaches.
-1. Oblivious equilibrium of Weintraub et al. (2008).
-
-I Firms optimize against stationary distribution of other rms'
-states.
-
-I Rather than keep track of each rm, play against a distribution.
-2. Limit the rm's information set so they only condition their
-actions and beliefs on moments of the state vector.
-
-I e.g. the mean and variance of sit .
-I See Gowrisankaran, Langer and Zhang (2023) Moment Based
-Markov Equilibrium
-
-I Context-specic assumptions: e.g. Hodgson (2021).
-
-I Gowrisankaran, Langer and Zhang (2023) has an appendix
-that tries to sort out the equilibirum denition zoo.
-
-Alternative Estimation Approaches
-
-I If solving the model is so hard, can't we adopt a 2-step CCP
-approach to estimation?
-
-I Yes!
-
-I Bajari, Benkard, and Levin (2007) and Pakes, Ostrovsky, and
-Berry (2007) adapt HM approach to dynamic games
-
-I Estimate CCPs.
-I Simulate value functions.
-I Find parameters that rationalize estimated CCPs.
-
-Step One
-I Estimate nonparametrically:
-ˆ it , s−it ) ∈ (0, 1)
-d(s
-â(sit , s−it ) ∈ (0, 1)
-ê(st ) ∈ (0, 1)
-fˆ(sit+1 |sit , ait )
-I If sit is discrete we can do this for every possible state value.
-I Otherwise, have to use some functional approximation (basis
-functions, splines, polynomial etc...)
-
-I As with single agent problems, be as exible as possible,
-because any arbitrary functional form assumption here might
-be inconsistent with the policy functions implied by the model.
-
-I But we never have innite data...
-
-Step Two: Inversion
-I Invert choice probabilities.
-I As before there are multiple ways to do this depending on the
-structure of the model.
-
-I i.e. can make use of terminal states and renewal actions:
-nite dependence properties.
-
-I For nite state space, Pakes, Ostrovsky and Berry show that
-you can do a matrix inversion similar to Aguirregabiria and
-Mira (2002).
-
-V = (I − βF0 )−1 ψ
-
-I Where now F0 is a matrix that includes transition of own-rm
-and other-rms states.
-
-I See POB for details.
-
-Step Two: Inversion
-I BBL: If you have continuous state space simulate value functions.
-I Just like in HMSS, but we have to simulate the actions of all rms.
-I For a guess of θ:
-1. Start at state st , action at .
-2. Record ow utility, π(sit , s−it ; θ )
-
-3. Draw a new own-state using fˆ(sit+1 |sit , ait ).
-
-ˆ , â(·), ê(·)
-4. Draw other rms' actions using d(·)
-5. Draw new other-rm states using fˆ(sjt+1 |sjt , ajt ) for j 6= i .
-6. Now we are at st+1 .
-
-ˆ , â(·), ê(·).
-7. Draw a new own-action using d(·)
-8. Repeat from 2.
-
-I Note: also have to record the expected value of the shocks, , at
-every step.
-
-I For T1EV, E (a |at = a) = λ − log (P(a))
-
-Step Two: Inversion
-
-I Simulate R times to obtain simulated choice-specic value function:
-v˜a (sit , s−i ; θ) = R1
-
-PR
-
-r
-r =1 va (sit , s−i ; θ).
-
-I So the same thing with entry and exit choices...
-I Now we can construct minimum distance estimators, just like
-in the single agent case:
-
-θ̂ = arg min
-θ
-
-
-
-
-
-
-ṽˆa (sit , s−i ) − ṽˆ0 (sit , s−i ) − (v˜a (sit , s−i ; θ) − v˜0 (sit , s−i ; θ))
-
-
-I Where ṽˆa (xt ) − ṽˆ0 (xt ) is the inversion of the 1st step CCPs.
-
-Step Two: Objective Function
-I Dierent papers have used dierent objective functions.
-I Pakes, Ostrovsky and Berry construct moments that look like:
-1 X
-ˆ it , s−it ) − d(s
-˜ it , s−i ; θ) = 0
-d(s
-S s
-1 X
-â(sit , s−it ) − ã(sit , s−i ; θ) = 0
-S s
-1 X
-ê(st ) − ẽ(st ; θ) = 0
-S s
-I Average the dierence between the 1st step CCPs and the
-CCPs implied by simulated value functions.
-
-I Averaging over states reduces the eect of 1st stage
-approximation error.
-
-I But might not want to use this with simulated d˜ because
-simulation error enters non-linearly.
-
-I Notice in this simple model, we'd only need these three
-moments to identify the parameters (c, κ, φ).
-
-Step Two
-I BBL uses perturbations of the optimal strategy.
-ˆ , â(·), ê(·) (as above) to get simulated
-I Simulate using d(·)
-expected value functions, Ṽ (sit , s−i ; θ) (not choice-specic here).
-
-I Now, perturb rm i 's policy function to d̃i (·), a˜i (·), e˜i (·) .
-ˆ , â(·), ê(·) for rms −i and
-I Forward simulate again, using d(·)
-˜ (s , s ; θ)
-d̃i (·), a˜i (·), e˜i (·) for rm i , get Ṽ
-it −i
-ˆ , â(·), ê(·) are in equilibrium given parameters θ, it should be:
-I If d(·)
-˜ (s , s ; θ)
-Ṽ (sit , s−i ; θ) ≥ Ṽ
-it −i
-
-I Otherwise there is a protable deviation from the observed
-strategies, and we can't have the right θ .
-
-Step Two
-
-I Dene violations of these inequalities:
-h
-n
-oi
-˜ (s , s ; θ), 0 2
-˜ ẽ; θ) = min Ṽ (sit , s−i ; θ) − Ṽ
-g (sit , s−i , ã, d,
-it −i
-I Objective function:
-θ̂ = arg min
-θ
-
-X X
-s
-
-˜ ẽ; θ)
-g (sit , s−i , ã, d,
-
-˜
-(ã,d,ẽ)
-
-I Inner sum is over a set of dierent perturbations of the policy
-function.
-
-Step Two
-θ̂ = arg min
-θ
-
-X X
-s
-
-˜ ẽ; θ)
-g (sit , s−i , ã, d,
-
-˜
-(ã,d,ẽ)
-
-I Notice that since g = 0 is possible we can have set
-identication.
-
-I i.e. multiple values of θ that generate 0 violations of the
-inequalities.
-
-I Adding more perturbations to the inner sum will, in general,
-make the identied set smaller.
-
-I How to pick perturbation strategies?
-I No clear rules.
-I BBL pick a small set of strategies at random:
-ˆ + η , where η ∼ N(0, σ)
-I e.g. d˜ = d(·)
-
-Step Two
-θ̂ = arg min
-θ
-
-X X
-s
-
-˜ ẽ; θ)
-g (sit , s−i , ã, d,
-
-˜
-(ã,d,ẽ)
-
-I Why would you use this BBL objective function rather than:
-θ̂ = arg min
-θ
-
-
-
-
-ṽˆa (sit , s−i ) − ṽˆ0 (sit , s−i ) − (v˜a (sit , s−i ; θ) − v˜0 (sit , s−i ; θ))
-
-I The one good reason I can think of is that BBL can handle
-continuous control variables more easily.
-I In this case, â(sit , s−it ) is the empirical distribution of
-at ∈ [0, ā] (for example) conditional on st .
-I Can use this to simulate value functions.
-I But we can't necessarily do Hotz-Milelr inversion to get
-ṽˆa (sit , s−i ) − ṽˆ0 (sit , s−i ).
-
-Issues
-I Standard errors?
-I Bootstrap.
-
-I Bad functional form assumptions in the 'nonparametric part
-can make it dicult to t the simulated choice probabilities:
-1 X
-
-S
-
-ˆ it , s−it ) − d(s
-˜ it , s−i ; θ) = 0
-d(s
-
-s
-
-I Counterfactual analysis requires solving for equilibrium!
-I But we avoid this in estimation.
-
-I Unobserved heterogeneity is dicult to deal with.
-I e.g. serially correlated unobservabes.
-I See references in syllabus.
-
-Next Time
-
-I We'll look at an application:
-I Sweeting (2013), Dynamic Product Positioning in
-Dierentiated Product Markets
-
-

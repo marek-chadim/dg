@@ -3,6 +3,7 @@ Solves equilibrium, simulates market dynamics, and estimates structural paramete
 using Bajari-Benkard-Levin (BBL) forward simulation estimator.
 """
 import os
+import argparse
 import numpy as np
 from scipy.stats import norm, binom
 from scipy.optimize import minimize
@@ -488,6 +489,10 @@ def bootstrap_estimates_parallel(eq, theta_hat, n_sim=300, horizon=300, T_ccp=10
     return estimates[valid]
 
 def main():
+    parser = argparse.ArgumentParser(description="Dynamic Entry/Exit Game Simulation and Estimation")
+    parser.add_argument('--mode', choices=['ps', 'hp'], default='ps', help='Mode: ps (problem setup, n_sim=50) or hp (high precision, n_sim=1000)')
+    args = parser.parse_args()
+    
     print("Dynamic Entry/Exit Game: Equilibrium and Estimation\n" + "="*70)
     
     # Q4-5: Solve and check uniqueness
@@ -586,16 +591,18 @@ def main():
         print(f"    Settings: n_sim={ob['n_sim']}, horizon={ob['horizon']}")
         print(f"    Objective breakdown: total={ob['total']:.6f}, inc_sum={ob['inc_sum']:.6f}, ent_sum={ob['ent_sum']:.6f}")
 
-    # Use high-precision for bootstrap
-    res = res_hp
+    res = res_ps if args.mode == 'ps' else res_hp
+    n_sim_boot = n_sim_ps if args.mode == 'ps' else n_sim_hp
     
-    # Then compute bootstrap bias, SEs, and percentile CIs on best result (parallel)
+    # Compute bootstrap percentile CIs (parallel)
     do_bootstrap = int(os.environ.get("BBL_BOOTSTRAP", "0")) > 0
     if do_bootstrap:
+        print(f"  Bootstrap using mode '{args.mode}' with res n_sim={res.obj_breakdown['n_sim'] if res.obj_breakdown else 'unknown'}")
         n_boot = int(os.environ.get("BBL_N_BOOTSTRAP", "100"))
         n_jobs = int(os.environ.get("BBL_BOOT_NJOBS", "-1"))
         T_ccp_boot = int(os.environ.get("BBL_BOOT_T_CCP", "10000"))
-        boot = bootstrap_estimates_parallel(eq, res.x, n_sim=1000, horizon=1000, T_ccp=T_ccp_boot, seed=2007, n_boot=n_boot, n_jobs=n_jobs)
+        n_sim_boot = int(os.environ.get("BBL_BOOT_N_SIM", str(n_sim_boot)))
+        boot = bootstrap_estimates_parallel(eq, res.x, n_sim=n_sim_boot, horizon=1000, T_ccp=T_ccp_boot, seed=2007, n_boot=n_boot, n_jobs=n_jobs)
         if boot is not None and boot.shape[0] >= 5:
             se = boot.std(axis=0, ddof=1)
             ci_lo = np.percentile(boot, 2.5, axis=0)

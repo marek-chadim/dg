@@ -490,7 +490,7 @@ def bootstrap_estimates_parallel(eq, theta_hat, n_sim=300, horizon=300, T_ccp=10
 
 def main():
     parser = argparse.ArgumentParser(description="Dynamic Entry/Exit Game Simulation and Estimation")
-    parser.add_argument('--mode', choices=['ps', 'hp'], default='ps', help='Mode: ps (problem setup, n_sim=50) or hp (high precision, n_sim=1000)')
+    parser.add_argument('--mode', choices=['ps', 'hp'], default='hp', help='Mode: ps (problem setup, n_sim=50) or hp (high precision, n_sim=1000)')
     args = parser.parse_args()
     
     print("Dynamic Entry/Exit Game: Equilibrium and Estimation\n" + "="*70)
@@ -595,7 +595,7 @@ def main():
     n_sim_boot = n_sim_ps if args.mode == 'ps' else n_sim_hp
     
     # Compute bootstrap percentile CIs (parallel)
-    do_bootstrap = int(os.environ.get("BBL_BOOTSTRAP", "0")) > 0
+    do_bootstrap = int(os.environ.get("BBL_BOOTSTRAP", "1")) > 0
     if do_bootstrap:
         print(f"  Bootstrap using mode '{args.mode}' with res n_sim={res.obj_breakdown['n_sim'] if res.obj_breakdown else 'unknown'}")
         n_boot = int(os.environ.get("BBL_N_BOOTSTRAP", "100"))
@@ -605,10 +605,20 @@ def main():
         boot = bootstrap_estimates_parallel(eq, res.x, n_sim=n_sim_boot, horizon=1000, T_ccp=T_ccp_boot, seed=2007, n_boot=n_boot, n_jobs=n_jobs)
         if boot is not None and boot.shape[0] >= 5:
             se = boot.std(axis=0, ddof=1)
-            ci_lo = np.percentile(boot, 2.5, axis=0)
-            ci_hi = np.percentile(boot, 97.5, axis=0)
+            bias = boot.mean(axis=0) - res.x
+            bias_corrected_theta = res.x - bias
+            # Percentile CI
+            ci_lo_perc = np.percentile(boot, 2.5, axis=0)
+            ci_hi_perc = np.percentile(boot, 97.5, axis=0)
+            # Bias-corrected CI
+            ci_lo_bc = 2 * res.x - np.percentile(boot, 97.5, axis=0)
+            ci_hi_bc = 2 * res.x - np.percentile(boot, 2.5, axis=0)
             print(f"  Bootstrap SE:         μ={se[0]:6.3f}, σ_μ={se[1]:5.3f}, γ={se[2]:6.3f}, σ_γ={se[3]:5.3f}")
-            print(f"  Percentile 95% CI:    μ=[{ci_lo[0]:6.3f}, {ci_hi[0]:6.3f}], σ_μ=[{ci_lo[1]:5.3f}, {ci_hi[1]:5.3f}], γ=[{ci_lo[2]:6.3f}, {ci_hi[2]:6.3f}], σ_γ=[{ci_lo[3]:5.3f}, {ci_hi[3]:5.3f}]")
+            print(f"  Original θ:           μ={res.x[0]:6.3f}, σ_μ={res.x[1]:5.3f}, γ={res.x[2]:6.3f}, σ_γ={res.x[3]:5.3f}")
+            print(f"  Bootstrap bias:       μ={bias[0]:6.3f}, σ_μ={bias[1]:5.3f}, γ={bias[2]:6.3f}, σ_γ={bias[3]:5.3f}")
+            print(f"  Bias-corrected θ:     μ={bias_corrected_theta[0]:6.3f}, σ_μ={bias_corrected_theta[1]:5.3f}, γ={bias_corrected_theta[2]:6.3f}, σ_γ={bias_corrected_theta[3]:5.3f}")
+            print(f"  Percentile 95% CI:    μ=[{ci_lo_perc[0]:6.3f}, {ci_hi_perc[0]:6.3f}], σ_μ=[{ci_lo_perc[1]:5.3f}, {ci_hi_perc[1]:5.3f}], γ=[{ci_lo_perc[2]:6.3f}, {ci_hi_perc[2]:6.3f}], σ_γ=[{ci_lo_perc[3]:5.3f}, {ci_hi_perc[3]:5.3f}]")
+            print(f"  Bias-corrected 95% CI: μ=[{ci_lo_bc[0]:6.3f}, {ci_hi_bc[0]:6.3f}], σ_μ=[{ci_lo_bc[1]:5.3f}, {ci_hi_bc[1]:5.3f}], γ=[{ci_lo_bc[2]:6.3f}, {ci_hi_bc[2]:6.3f}], σ_γ=[{ci_lo_bc[3]:5.3f}, {ci_hi_bc[3]:5.3f}]")
     
     print("\n" + "="*70)
 
